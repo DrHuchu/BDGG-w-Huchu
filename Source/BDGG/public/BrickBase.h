@@ -16,6 +16,7 @@ public:
 	ABrickBase();
 
 protected:
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -30,7 +31,10 @@ public:
 		class UBoxComponent* boxComp;
 
 	UPROPERTY(EditAnywhere, Category = "Block")
-		class UGeometryCollection* DestructibleMesh;
+		class UGeometryCollectionComponent* DestructibleMesh;
+
+	UFUNCTION()
+		void OnBrickHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bBFromSweep, const FHitResult& SweepResult);
 
 
 };

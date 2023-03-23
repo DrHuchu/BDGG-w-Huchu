@@ -5,7 +5,7 @@
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "GeometryCollection/GeometryCollectionObject.h"
+#include "GeometryCollection/GeometryCollectionComponent.h"
 
 // Sets default values
 ABrickBase::ABrickBase()
@@ -19,14 +19,19 @@ ABrickBase::ABrickBase()
 	meshComp->SetupAttachment(boxComp);
 	meshComp->SetRelativeScale3D(FVector(0.25f));
 
-	DestructibleMesh = CreateDefaultSubobject<UGeometryCollection>(TEXT("DestructedMesh"));
+	DestructibleMesh = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("DestructedMesh"));
+	DestructibleMesh->SetupAttachment(boxComp);
 }
 
 // Called when the game starts or when spawned
 void ABrickBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	DestructibleMesh->SetVisibility(false);
+	DestructibleMesh->SetSimulatePhysics(false);
+	DestructibleMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	boxComp->OnComponentBeginOverlap.AddDynamic(this, &ABrickBase::OnBrickHit);
 }
 
 // Called every frame
@@ -34,5 +39,11 @@ void ABrickBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ABrickBase::OnBrickHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bBFromSweep, const FHitResult& SweepResult)
+{
+	
 }
 
