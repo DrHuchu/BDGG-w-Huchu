@@ -14,4 +14,17 @@ class BDGG_API UGameModeWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
+public:
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* TextBlock_Min;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* TextBlock_Sec;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* TextBlock_Dot;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* TextBlock_StartCount;
+		
+	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidgetAnim))
+	class UWidgetAnimation* Anim_StartCount;
 };

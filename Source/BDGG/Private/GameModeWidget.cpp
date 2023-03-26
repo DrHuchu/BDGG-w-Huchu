@@ -2,4 +2,5 @@
 
 
 #include "GameModeWidget.h"
+#include "Components/TextBlock.h"
 
