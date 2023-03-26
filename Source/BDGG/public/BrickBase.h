@@ -30,11 +30,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Block")
 		class UBoxComponent* boxComp;
 
-	UPROPERTY(EditAnywhere, Category = "Block")
-		class UGeometryCollectionComponent* DestructibleMesh;
-
 	UFUNCTION()
-		void OnBrickHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bBFromSweep, const FHitResult& SweepResult);
-
-
+	void OnBlockHit();
 };
