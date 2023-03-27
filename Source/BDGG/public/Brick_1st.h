@@ -1,0 +1,27 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "BrickBase.h"
+#include "Brick_1st.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class BDGG_API ABrick_1st : public ABrickBase
+{
+	GENERATED_BODY()
+	virtual void AddScore() override;
+
+public:
+	UPROPERTY(VisibleAnywhere, Category = "Brick")
+	int32 brickHP = 5;
+
+	UPROPERTY(VisibleAnywhere, Category = "Brick")
+	float mixValue = 0;
+
+	UPROPERTY(VisibleAnywhere, Category = "Brick")
+	float power = 30;
+};

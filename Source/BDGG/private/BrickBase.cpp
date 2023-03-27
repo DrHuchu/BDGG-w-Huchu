@@ -18,12 +18,19 @@ ABrickBase::ABrickBase()
 	meshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("meshComp"));
 	meshComp->SetupAttachment(boxComp);
 	meshComp->SetRelativeScale3D(FVector(0.25f));
+
+	destructibleMesh = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("DestructibleMesh"));
+	destructibleMesh->SetupAttachment(boxComp);
+
 }
 
 // Called when the game starts or when spawned
 void ABrickBase::BeginPlay()
 {
 	Super::BeginPlay();
+	destructibleMesh->SetVisibility(false);
+	destructibleMesh->SetSimulatePhysics(false);
+	destructibleMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called every frame
@@ -36,16 +43,11 @@ void ABrickBase::Tick(float DeltaTime)
 void ABrickBase::OnBlockHit()
 {
 	//점수를 올린다.
+	AddScore();
+}
+
+void ABrickBase::AddScore()
+{
 	UE_LOG(LogTemp, Warning, TEXT("Score ++"));
-
-	//블럭 제거
-	Destroy();
-
-	//2초 후에 블럭 삭제
-	/*FTimerHandle blockTimer;
-	GetWorldTimerManager().SetTimer(blockTimer, FTimerDelegate::CreateLambda([&]()
-	{
-			Destroy();
-	}),2.0f, false);*/
 }
 

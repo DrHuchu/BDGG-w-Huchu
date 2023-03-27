@@ -24,12 +24,28 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, Category = "Block")
-		class UStaticMeshComponent* meshComp;
+	UPROPERTY(EditAnywhere, Category = "Brick")
+	class UStaticMeshComponent* meshComp;
 
-	UPROPERTY(EditAnywhere, Category = "Block")
-		class UBoxComponent* boxComp;
+	UPROPERTY(EditAnywhere, Category = "Brick")
+	class UBoxComponent* boxComp;
+
+	UPROPERTY(EditAnywhere, Category = "Brick")
+	class UGeometryCollectionComponent* destructibleMesh;
+
+
+	UPROPERTY(EditAnywhere, Category = "Brick")
+	FVector hitDirection;
+
+	UPROPERTY(EditAnywhere, Category = "Brick")
+	FVector hitOrigin;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Brick")
+	TSubclassOf<class AFieldSystemActor> masterField;
 
 	UFUNCTION()
 	void OnBlockHit();
+
+	UFUNCTION()
+	virtual void AddScore();
 };

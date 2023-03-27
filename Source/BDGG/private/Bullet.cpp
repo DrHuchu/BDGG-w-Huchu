@@ -39,10 +39,15 @@ void ABullet::BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 {
 	//오버랩 된 액터가 벽돌이라면
 	brick = Cast<ABrickBase>(OtherActor);
+	if(brick)
+	{
 	//블럭을 파괴하고
 	brick->OnBlockHit();
+	brick->hitOrigin = GetActorLocation();
+	brick->hitDirection = brick->GetActorLocation() - GetActorLocation();
 	//자기 자신도 파괴한다.
 	Destroy();
+	}
 
 }
 
