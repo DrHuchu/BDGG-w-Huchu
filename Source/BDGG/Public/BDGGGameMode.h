@@ -21,6 +21,10 @@ public:
 	int countDownTimeSec;
 	int startCountNum = 3;
 
+	UPROPERTY(EditDefaultsOnly)
+	int playTime = 20;
+
+
 	FTimerHandle countDownTimerHandle;
 	FTimerHandle startCountHandle;
 

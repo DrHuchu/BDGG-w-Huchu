@@ -15,7 +15,7 @@ ABDGGGameMode::ABDGGGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<UGameModeWidget> gameModeWidgetTemp(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/LTG/Blueprints/BP_GameModeWidget.BP_GameModeWidget_C'"));
+	static ConstructorHelpers::FClassFinder<UGameModeWidget> gameModeWidgetTemp(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/LTG/UI/WBP_GameModeWidget.WBP_GameModeWidget_C'"));
 	if (gameModeWidgetTemp.Succeeded())
 	{
 		gameModeWidgetFactory = gameModeWidgetTemp.Class;
@@ -28,8 +28,6 @@ void ABDGGGameMode::BeginPlay()
 
 	gameModeWidgetUI = CreateWidget<UGameModeWidget>(GetWorld(), gameModeWidgetFactory);
 	gameModeWidgetUI->AddToViewport();
-
-	StartWidgetPlay();
 }
 
 void ABDGGGameMode::CountDownTimer(int TimeInSec)
@@ -61,7 +59,7 @@ void ABDGGGameMode::StartWidgetPlay()
 		{
 			gameModeWidgetUI->TextBlock_StartCount->SetText(FText::FromString("Start!"));
 			GetWorldTimerManager().ClearTimer(startCountHandle);
-			CountDownTimer(120);
+			CountDownTimer(playTime);
 		}
 		gameModeWidgetUI->PlayAnimation(gameModeWidgetUI->Anim_StartCount);
 		startCountNum--;
@@ -80,6 +78,14 @@ void ABDGGGameMode::UpdateMinAndSec()
 		gameModeWidgetUI->TextBlock_Dot->SetVisibility(ESlateVisibility::Visible);
 
 		gameModeWidgetUI->TextBlock_Min->SetText(FText::AsNumber(countDownTimeMin));
-		gameModeWidgetUI->TextBlock_Sec->SetText(FText::AsNumber(countDownTimeSec));
+
+		if (countDownTimeSec <= 9)
+		{
+			gameModeWidgetUI->TextBlock_Sec->SetText(FText::FromString("0" + FString::FormatAsNumber(countDownTimeSec)));
+		}
+		else
+		{
+			gameModeWidgetUI->TextBlock_Sec->SetText(FText::AsNumber(countDownTimeSec));
+		}
 	}
 }
