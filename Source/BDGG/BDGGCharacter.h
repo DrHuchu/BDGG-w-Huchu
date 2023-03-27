@@ -12,15 +12,14 @@ UCLASS(config=Game)
 class ABDGGCharacter : public ACharacter
 {
 	GENERATED_BODY()
+	/** Follow camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* FollowCamera;
 
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
-
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FollowCamera;
-	
+			
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
@@ -36,6 +35,34 @@ class ABDGGCharacter : public ACharacter
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
+
+	/*ÃÑ*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class USkeletalMeshComponent* gunMeshComp;
+
+	UPROPERTY(EditAnywhere)
+	float fireInterval = 0.5f;
+	FTimerHandle fireTimerHandle;
+
+	//ÃÑ¾Ë°øÀå
+	UPROPERTY(EditDefaultsOnly, Category = BulletFactory)
+	TSubclassOf<class ABullet> bulletFactory;
+
+	//ÃÑ¾Ë¹ß»ç Ã³+¸®ÇÔ¼ö
+	void InputFire();
+
+
+
+	//ÀÔ·ÂÅ° 
+	UPROPERTY(EditDefaultsOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputMappingContext* IMC_Input;
+
+	/*ÃÑ½î´Â ¹öÆ°*/
+	UPROPERTY(EditDefaultsOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* IA_Fire;
+
+
+
 
 public:
 	ABDGGCharacter();
