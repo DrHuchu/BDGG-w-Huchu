@@ -4,27 +4,28 @@
 
 #include "CoreMinimal.h"
 #include "BrickBase.h"
-#include "Brick_1st.generated.h"
+#include "Brick_2nd.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BDGG_API ABrick_1st : public ABrickBase
+class BDGG_API ABrick_2nd : public ABrickBase
 {
 	GENERATED_BODY()
+
 	virtual void AddScore() override;
 
 public:
 	UPROPERTY(VisibleAnywhere, Category = "Brick")
-	int32 brickMaxHP = 2;
+		int32 brickMaxHP = 5;
 
 	UPROPERTY(VisibleAnywhere, Category = "Brick")
-	int32 brickHP = brickMaxHP;
+		int32 brickHP = brickMaxHP;
 
 	UPROPERTY(VisibleAnywhere, Category = "Brick")
-	float mixValue = 0;
+		float mixValue = 0;
 
 	UPROPERTY(VisibleAnywhere, Category = "Brick")
-	float power = 30;
+		float power = 30;
 };

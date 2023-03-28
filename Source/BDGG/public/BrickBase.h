@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/TimelineComponent.h"
 #include "BrickBase.generated.h"
 
 UCLASS()
@@ -49,4 +48,11 @@ public:
 	UFUNCTION()
 	virtual void AddScore();
 
+	class ABDGGGameMode* gm;
+
+	UPROPERTY(VisibleAnywhere, Category = "Brick")
+	bool bIsBroken = false;
+
+	UFUNCTION()
+	void ParticleDownsize(UPrimitiveComponent* ChangedComponent, EComponentPhysicsStateChange StateChange);
 };
