@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/TimelineComponent.h"
 #include "BrickBase.generated.h"
 
 UCLASS()
@@ -16,7 +17,6 @@ public:
 	ABrickBase();
 
 protected:
-	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -30,7 +30,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Brick")
 	class UBoxComponent* boxComp;
 
-	UPROPERTY(EditAnywhere, Category = "Brick")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Brick")
 	class UGeometryCollectionComponent* destructibleMesh;
 
 
@@ -48,4 +48,5 @@ public:
 
 	UFUNCTION()
 	virtual void AddScore();
+
 };

@@ -5,6 +5,7 @@
 
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Components/PrimitiveComponent.h"
+#include "Engine/EngineTypes.h"
 
 void ABrick_1st::AddScore()
 {
@@ -28,7 +29,7 @@ void ABrick_1st::AddScore()
 		destructibleMesh->SetVisibility(true);
 		destructibleMesh->SetSimulatePhysics(true);
 		destructibleMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		destructibleMesh->SetCollisionProfileName(FName("PhysicsActor"));
+		destructibleMesh->SetCollisionProfileName(FName("Destructible"));
 
 		destructibleMesh->AddForceAtLocation(hitDirection.GetSafeNormal() * 5000000.0f , GetActorLocation());
 
@@ -46,6 +47,7 @@ void ABrick_1st::AddScore()
 		FTimerHandle destroyTimer;
 		GetWorldTimerManager().SetTimer(destroyTimer, FTimerDelegate::CreateLambda([&]()
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Destroy"));
 				Destroy();
 			}), 3.0f, false);
 	}

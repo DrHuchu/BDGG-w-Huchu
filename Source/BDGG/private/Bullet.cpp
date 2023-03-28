@@ -30,7 +30,7 @@ void ABullet::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//임시 자동 전진--------------------------------------
-	SetActorLocation(GetActorLocation() + GetActorForwardVector() * 100 * DeltaTime);
+	SetActorLocation(GetActorLocation() + GetActorForwardVector() * 2000 * DeltaTime);
 }
 
 // 총알 충돌 함수

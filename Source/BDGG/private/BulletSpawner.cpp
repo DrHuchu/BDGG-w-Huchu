@@ -28,7 +28,7 @@ void ABulletSpawner::Tick(float DeltaTime)
 
 	currentTime += DeltaTime;
 
-	if(currentTime > 1.5f)
+	if(currentTime > 0.7f)
 	{
 		GetWorld()->SpawnActor<ABullet>(bulletFactory, GetActorLocation() + GetActorForwardVector() * 20, GetActorRotation());
 		currentTime = 0;

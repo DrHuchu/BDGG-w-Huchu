@@ -5,6 +5,7 @@
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/TimelineComponent.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 
 // Sets default values
@@ -28,9 +29,12 @@ ABrickBase::ABrickBase()
 void ABrickBase::BeginPlay()
 {
 	Super::BeginPlay();
+
 	destructibleMesh->SetVisibility(false);
 	destructibleMesh->SetSimulatePhysics(false);
 	destructibleMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	
 }
 
 // Called every frame
@@ -50,4 +54,3 @@ void ABrickBase::AddScore()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Score ++"));
 }
-
