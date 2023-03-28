@@ -56,7 +56,7 @@ void ABullet::BeginPlay()
 		[this]()->void {
 			this->Destroy();
 		}
-	), 2, false);
+	), 0.05, false);
 }
 
 // Called every frame

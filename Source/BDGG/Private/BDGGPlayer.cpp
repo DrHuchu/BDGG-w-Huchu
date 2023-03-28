@@ -6,7 +6,8 @@
 #include <Camera/CameraComponent.h>
 #include <GameFramework/CharacterMovementComponent.h>
 #include "BDGGPlayerMoveComponent.h"
-#include "BDGGPlayerFireComponent.h"
+#include "../Bullet.h"
+
 
 // Sets default values
 ABDGGPlayer::ABDGGPlayer()
@@ -43,7 +44,6 @@ ABDGGPlayer::ABDGGPlayer()
 	springArmComp->bUsePawnControlRotation = true;
 	cameraComp->bUsePawnControlRotation = true;
 
-	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	// 일반총의 컴포넌트를 만들고싶다.
 	gunMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("gunMeshComp"));
@@ -58,7 +58,7 @@ ABDGGPlayer::ABDGGPlayer()
 
 	// 이동컴포넌트와 총쏘기컴포넌트를 생성하고싶다.
 	moveComp = CreateDefaultSubobject<UBDGGPlayerMoveComponent>(TEXT("moveComp"));
-	fireComp = CreateDefaultSubobject<UBDGGPlayerFireComponent>(TEXT("fireComp"));
+
 }
 
 // Called when the game starts or when spawned
@@ -81,8 +81,34 @@ void ABDGGPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	moveComp->SetupPlayerInput(PlayerInputComponent);
-	fireComp->SetupPlayerInput(PlayerInputComponent);
 	//setupInputDelegate.Broadcast(PlayerInputComponent);
+
+	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &ABDGGPlayer::OnActionFirePressed);
+
+	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Released, this, &ABDGGPlayer::OnActionFireReleased);
 
 }
 
+void ABDGGPlayer::OnActionFirePressed()
+{
+	DoFire();
+}
+
+void ABDGGPlayer::OnActionFireReleased()
+{
+
+}
+
+void ABDGGPlayer::DoFire()
+{
+	//SpawnActor
+	//이런거 찾을 때 APlayer Getworld UKismetMathLibrary, UGameplayStatics
+	//중에 찾아보기
+	//플레이어 1m 앞
+	FTransform t =gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
+	GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
+
+	 
+}
+
+ 

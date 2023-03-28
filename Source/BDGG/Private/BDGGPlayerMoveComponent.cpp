@@ -3,7 +3,7 @@
 
 #include "BDGGPlayerMoveComponent.h"
 #include "BDGGPlayer.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include <GameFramework/CharacterMovementComponent.h>
 
 
 // Sets default values for this component's properties
@@ -13,9 +13,8 @@ UBDGGPlayerMoveComponent::UBDGGPlayerMoveComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	
 }
-
 
 // Called when the game starts
 void UBDGGPlayerMoveComponent::BeginPlay()
@@ -39,9 +38,7 @@ void UBDGGPlayerMoveComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	FVector resultDirection = trans.TransformVector(direction);
 	resultDirection.Z = 0;
 	resultDirection.Normalize();
-
 	me->AddMovementInput(resultDirection);
-
 	direction = FVector::ZeroVector;
 }
 
@@ -68,23 +65,27 @@ void UBDGGPlayerMoveComponent::SetupPlayerInput(UInputComponent* PlayerInputComp
 
 
 void UBDGGPlayerMoveComponent::OnAxisHorizontal(float value)
-{
+{  
+	
 	direction.Y = value;
 }
 
 void UBDGGPlayerMoveComponent::OnAxisVertical(float value)
 {
+	
 	direction.X = value;
 }
 
 void UBDGGPlayerMoveComponent::OnAxisLookUp(float value)
 {
+	UE_LOG(LogTemp, Warning, TEXT("%f : pitch"), value)
 	// Pitch
 	me->AddControllerPitchInput(value);
 }
 
 void UBDGGPlayerMoveComponent::OnAxisTurnRight(float value)
 {
+	UE_LOG(LogTemp, Warning, TEXT("%f : yaw"), value)
 	// Yaw
 	me->AddControllerYawInput(value);
 }

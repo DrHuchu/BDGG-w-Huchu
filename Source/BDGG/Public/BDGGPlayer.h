@@ -26,19 +26,28 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void OnActionFirePressed();
+	void OnActionFireReleased();
+
+	void DoFire();
+
+	//마우스 왼쪽버튼을누르면 총알공장에서 총알을만들어서 
+	//총구위치에 배치하고싶다.
 	UPROPERTY(EditAnywhere)
-		class USpringArmComponent* springArmComp;
+	TSubclassOf<class ABullet> bulletFactory;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		class UCameraComponent* cameraComp;
+	class USkeletalMeshComponent* gunMeshComp;
+
+	UPROPERTY(EditAnywhere)
+	class USpringArmComponent* springArmComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		class USkeletalMeshComponent* gunMeshComp;
+	class UCameraComponent* cameraComp;
 
 	UPROPERTY(EditAnywhere)
 	class UBDGGPlayerMoveComponent* moveComp;
 
-	UPROPERTY(EditAnywhere)
-	class UBDGGPlayerFireComponent* fireComp;
+
 
 };
