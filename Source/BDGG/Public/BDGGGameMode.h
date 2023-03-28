@@ -15,27 +15,6 @@ class ABDGGGameMode : public AGameModeBase
 public:
 	ABDGGGameMode();
 	virtual void BeginPlay() override;
-
-	int countDownTime;
-	int countDownTimeMin;
-	int countDownTimeSec;
-	int startCountNum = 3;
-
-	UPROPERTY(EditDefaultsOnly)
-	int playTime = 20;
-
-
-	FTimerHandle countDownTimerHandle;
-	FTimerHandle startCountHandle;
-
-	void CountDownTimer(int TimeInSec);
-	void StartWidgetPlay();
-	void UpdateMinAndSec();
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class UGameModeWidget> gameModeWidgetFactory;
-	UPROPERTY()
-	class UGameModeWidget* gameModeWidgetUI;
 };
 
 

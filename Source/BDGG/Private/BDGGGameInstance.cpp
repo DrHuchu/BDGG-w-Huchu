@@ -10,6 +10,12 @@
 UBDGGGameInstance::UBDGGGameInstance()
 {
 	sessionID = "BDGG";
+
+	static ConstructorHelpers::FClassFinder<UGameModeWidget> gameModeWidgetTemp(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/LTG/UI/WBP_GameModeWidget.WBP_GameModeWidget_C'"));
+	if (gameModeWidgetTemp.Succeeded())
+	{
+		gameModeWidgetFactory = gameModeWidgetTemp.Class;
+	}
 }
 
 void UBDGGGameInstance::Init()
@@ -31,6 +37,8 @@ void UBDGGGameInstance::Init()
 
 	FString platformName = subsys->GetSubsystemName().ToString();
 	UE_LOG(LogTemp, Warning, TEXT("Platform Is : %s"), *platformName);
+
+	gameModeWidgetUI = CreateWidget<UGameModeWidget>(GetWorld(), gameModeWidgetFactory);
 }
 
 void UBDGGGameInstance::OnCreationSessionComplete(FName sessionName, bool bIsSuccess)
@@ -135,3 +143,4 @@ void UBDGGGameInstance::JoinMySession(int sessionIndex)
 	FOnlineSessionSearchResult selectedSession = sessionSearch->SearchResults[sessionIndex];
 	sessionInterface->JoinSession(0, sessionID, selectedSession);
 }
+

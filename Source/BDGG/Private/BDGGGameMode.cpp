@@ -14,78 +14,10 @@ ABDGGGameMode::ABDGGGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
-
-	static ConstructorHelpers::FClassFinder<UGameModeWidget> gameModeWidgetTemp(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/LTG/UI/WBP_GameModeWidget.WBP_GameModeWidget_C'"));
-	if (gameModeWidgetTemp.Succeeded())
-	{
-		gameModeWidgetFactory = gameModeWidgetTemp.Class;
-	}
 }
 
 void ABDGGGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	gameModeWidgetUI = CreateWidget<UGameModeWidget>(GetWorld(), gameModeWidgetFactory);
-	gameModeWidgetUI->AddToViewport();
-}
-
-void ABDGGGameMode::CountDownTimer(int TimeInSec)
-{
-	countDownTime = TimeInSec;
-	UpdateMinAndSec();
-	GetWorldTimerManager().SetTimer(countDownTimerHandle, FTimerDelegate::CreateLambda([&](){
-		if (countDownTime > 0)
-		{
-			countDownTime--;
-			UpdateMinAndSec();
-		}
-		else
-		{
-			countDownTime = 0;
-			GetWorldTimerManager().ClearTimer(countDownTimerHandle);
-		}
-		}), 1.f, true);
-}
-
-void ABDGGGameMode::StartWidgetPlay()
-{
-	GetWorldTimerManager().SetTimer(startCountHandle, FTimerDelegate::CreateLambda([&](){
-		if (startCountNum != 0)
-		{
-			gameModeWidgetUI->TextBlock_StartCount->SetText(FText::AsNumber(startCountNum));
-		}
-		else
-		{
-			gameModeWidgetUI->TextBlock_StartCount->SetText(FText::FromString("Start!"));
-			GetWorldTimerManager().ClearTimer(startCountHandle);
-			CountDownTimer(playTime);
-		}
-		gameModeWidgetUI->PlayAnimation(gameModeWidgetUI->Anim_StartCount);
-		startCountNum--;
-	}),1.f, true);
-}
-
-void ABDGGGameMode::UpdateMinAndSec()
-{
-	countDownTimeMin = countDownTime / 60;
-	countDownTimeSec = countDownTime % 60;
-
-	if (gameModeWidgetUI)
-	{
-		gameModeWidgetUI->TextBlock_Min->SetVisibility(ESlateVisibility::Visible);
-		gameModeWidgetUI->TextBlock_Sec->SetVisibility(ESlateVisibility::Visible);
-		gameModeWidgetUI->TextBlock_Dot->SetVisibility(ESlateVisibility::Visible);
-
-		gameModeWidgetUI->TextBlock_Min->SetText(FText::AsNumber(countDownTimeMin));
-
-		if (countDownTimeSec <= 9)
-		{
-			gameModeWidgetUI->TextBlock_Sec->SetText(FText::FromString("0" + FString::FormatAsNumber(countDownTimeSec)));
-		}
-		else
-		{
-			gameModeWidgetUI->TextBlock_Sec->SetText(FText::AsNumber(countDownTimeSec));
-		}
-	}
 }

@@ -45,4 +45,9 @@ public:
 	void CreateMySession(FString roomName, int playerCount);
 	void FindMySession();
 	void JoinMySession(int sessionIndex);
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UGameModeWidget> gameModeWidgetFactory;
+	UPROPERTY(BlueprintReadOnly)
+	class UGameModeWidget* gameModeWidgetUI;
 };

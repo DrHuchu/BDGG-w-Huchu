@@ -15,6 +15,11 @@ class BDGG_API UGameModeWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+	UPROPERTY()
+	class ABDGGGameMode* gm;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UTextBlock* TextBlock_Min;
@@ -45,4 +50,22 @@ public:
 		
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidgetAnim))
 	class UWidgetAnimation* Anim_StartCount;
+
+	void RefreshRanking();
+
+	// 타이머 관련
+	int countDownTime;
+	int countDownTimeMin;
+	int countDownTimeSec;
+	int startCountNum = 3;
+
+	UPROPERTY(EditDefaultsOnly)
+		int playTime = 20;
+
+	FTimerHandle countDownTimerHandle;
+	FTimerHandle startCountHandle;
+
+	void CountDownTimer(int TimeInSec);
+	void StartWidgetPlay();
+	void UpdateMinAndSec();
 };
