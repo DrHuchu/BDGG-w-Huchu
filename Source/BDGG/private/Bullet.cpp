@@ -30,7 +30,7 @@ void ABullet::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//임시 자동 전진--------------------------------------
-	SetActorLocation(GetActorLocation() + GetActorForwardVector() * 100 * DeltaTime);
+	SetActorLocation(GetActorLocation() + GetActorForwardVector() * 2000 * DeltaTime);
 }
 
 // 총알 충돌 함수
@@ -39,10 +39,15 @@ void ABullet::BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 {
 	//오버랩 된 액터가 벽돌이라면
 	brick = Cast<ABrickBase>(OtherActor);
+	if(brick)
+	{
 	//블럭을 파괴하고
+	brick->hitOrigin = GetActorLocation();
+	brick->hitDirection = brick->GetActorLocation() - GetActorLocation();
 	brick->OnBlockHit();
 	//자기 자신도 파괴한다.
 	Destroy();
+	}
 
 }
 
