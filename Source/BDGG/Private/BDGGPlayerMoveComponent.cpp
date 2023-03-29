@@ -78,14 +78,14 @@ void UBDGGPlayerMoveComponent::OnAxisVertical(float value)
 
 void UBDGGPlayerMoveComponent::OnAxisLookUp(float value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%f : pitch"), value)
+	//UE_LOG(LogTemp, Warning, TEXT("%f : pitch"), value)
 	// Pitch
 	me->AddControllerPitchInput(value);
 }
 
 void UBDGGPlayerMoveComponent::OnAxisTurnRight(float value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%f : yaw"), value)
+	//UE_LOG(LogTemp, Warning, TEXT("%f : yaw"), value)
 	// Yaw
 	me->AddControllerYawInput(value);
 }

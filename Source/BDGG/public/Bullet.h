@@ -30,6 +30,8 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Bullet")
 	class ABrickBase* brick;
 
+	UPROPERTY(VisibleAnywhere, Category = "Bullet")
+	class AUnbreakableBrick* unbreakable;
 
 	//함수 관련
 	UFUNCTION()
