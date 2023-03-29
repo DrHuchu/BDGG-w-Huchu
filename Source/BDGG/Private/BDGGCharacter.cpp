@@ -9,7 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-
+#include "Bullet.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ABDGGCharacter
@@ -49,6 +49,21 @@ ABDGGCharacter::ABDGGCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	//일반총의 에셋을 읽어서 컴포넌트에 넣고싶다.
+	gunMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("gunMeshComp"));
+	gunMeshComp->SetupAttachment(GetMesh(), TEXT("hand_rSocket"));
+	//일반총의 에셋을 읽어서 컴포넌트에 넣고싶다.
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempGunMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/FPWeapon/Mesh/SK_FPGun.SK_FPGun'"));
+
+	if (tempGunMesh.Succeeded())
+	{
+		gunMeshComp->SetSkeletalMesh(tempGunMesh.Object);
+		gunMeshComp->SetRelativeLocation(FVector(0, 50, 110));
+	}
+
+
+
 }
 
 void ABDGGCharacter::BeginPlay()
@@ -72,8 +87,9 @@ void ABDGGCharacter::BeginPlay()
 void ABDGGCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+
 		//Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
@@ -84,9 +100,23 @@ void ABDGGCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABDGGCharacter::Look);
 
+		//Fire
+		EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Started, this, &ABDGGCharacter::InputFire);
+	
 	}
 
 }
+
+
+void ABDGGCharacter::InputFire()
+{
+	//총알 발사 처리
+	FTransform firePosition = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
+	GetWorld()->SpawnActor<ABullet>(bulletFactory, firePosition);
+}
+
+
+
 
 void ABDGGCharacter::Move(const FInputActionValue& Value)
 {
