@@ -6,8 +6,7 @@
 #include <Camera/CameraComponent.h>
 #include <GameFramework/CharacterMovementComponent.h>
 #include "BDGGPlayerMoveComponent.h"
-#include "../Bullet.h"
-
+#include "Bullet.h"
 
 // Sets default values
 ABDGGPlayer::ABDGGPlayer()
