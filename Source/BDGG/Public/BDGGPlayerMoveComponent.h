@@ -40,6 +40,7 @@ public:
 	void OnActionCrouchPressed();
 	void OnActionCrouchReleased();
 
+
 	float speedRun = 600; // LShift : Run(600)
 	float speedWalk = 400; // None : Walk(400)
 	float speedCrouch = 200; // LCtrl : Crouch(200)
@@ -47,5 +48,19 @@ public:
 	FVector direction;
 	float walkSpeed = 600;
 
+	virtual void NativeBeginPlay() override;
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = AnimSettings)
+	float rotAngle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = AnimSettings)
+	float moveSpeed;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = AnimSettings)
+	bool bIsJumping = false;
+		
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = AnimSettings)
+	float pitch = 0;
 		
 };
