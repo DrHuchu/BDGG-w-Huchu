@@ -8,6 +8,8 @@
 #include "Components/PrimitiveComponent.h"
 #include "Engine/EngineTypes.h"
 #include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
+#include "Kismet/GameplayStatics.h"
 
 void ABrick_1st::AddScore()
 {
@@ -25,8 +27,10 @@ void ABrick_1st::AddScore()
 		UE_LOG(LogTemp, Warning, TEXT("Score ++*3"));
 		if(gm)
 		{
-			//gamestate의 점수 5점 득점
-			//gm->GameState->PlayerArray
+			//점수 득점
+			UGameplayStatics::GetPlayerState(this, 0)->SetScore(UGameplayStatics::GetPlayerState(this, 0)->GetScore() + brickScore1);
+			UE_LOG(LogTemp, Warning, TEXT("%f"), UGameplayStatics::GetPlayerState(this, 0)->GetScore());
+
 		}
 		
 
@@ -38,26 +42,15 @@ void ABrick_1st::AddScore()
 		destructibleMesh->SetSimulatePhysics(true);
 		destructibleMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		destructibleMesh->SetCollisionProfileName(FName("Destructible"));
-		
-
 
 		destructibleMesh->AddForceAtLocation(hitDirection.GetSafeNormal() * 5000000.0f , GetActorLocation());
 
-
-		//FTimerHandle masterFieldTimer;
-		//GetWorldTimerManager().SetTimer(masterFieldTimer, FTimerDelegate::CreateLambda([&]()
-		//	{
-		//	if(field)
-		//	{
-		//		UE_LOG(LogTemp, Warning, TEXT("Field Destroy"));
-		//	}
-		//	}), 0.2f, false);
 
 		//3초 후에 완전히 파괴
 		FTimerHandle destroyTimer;
 		GetWorldTimerManager().SetTimer(destroyTimer, FTimerDelegate::CreateLambda([&]()
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Destroy"));
+				//UE_LOG(LogTemp, Warning, TEXT("Destroy"));
 				Destroy();
 			}), 3.0f, false);
 	}

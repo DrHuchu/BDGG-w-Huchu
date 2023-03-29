@@ -55,4 +55,7 @@ public:
 
 	UFUNCTION()
 	void ParticleDownsize(UPrimitiveComponent* ChangedComponent, EComponentPhysicsStateChange StateChange);
+
+	UPROPERTY(EditAnywhere, Category = "Brick")
+	int32 brickScore = 100;
 };

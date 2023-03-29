@@ -3,6 +3,7 @@
 
 #include "Bullet.h"
 #include "BrickBase.h"
+#include "UnbreakableBrick.h"
 #include "Components/StaticMeshComponent.h"
 
 // Sets default values
@@ -39,6 +40,8 @@ void ABullet::BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 {
 	//오버랩 된 액터가 벽돌이라면
 	brick = Cast<ABrickBase>(OtherActor);
+	unbreakable = Cast<AUnbreakableBrick>(OtherActor);
+
 	if(brick)
 	{
 	//블럭을 파괴하고
@@ -48,6 +51,8 @@ void ABullet::BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 	//자기 자신도 파괴한다.
 	Destroy();
 	}
+
+	Destroy();
 
 }
 

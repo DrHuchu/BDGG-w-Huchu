@@ -16,6 +16,9 @@ class BDGG_API ABrick_1st : public ABrickBase
 	virtual void AddScore() override;
 
 public:
+	UPROPERTY(EditAnywhere, Category = "Brick")
+	int32 brickScore1 = 250;
+
 	UPROPERTY(VisibleAnywhere, Category = "Brick")
 	int32 brickMaxHP = 2;
 

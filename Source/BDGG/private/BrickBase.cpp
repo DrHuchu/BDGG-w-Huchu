@@ -8,6 +8,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Components/PrimitiveComponent.h"
+#include "GameFramework/PlayerState.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABrickBase::ABrickBase()
@@ -72,11 +74,12 @@ void ABrickBase::AddScore()
 	UE_LOG(LogTemp, Warning, TEXT("Score ++*3"));
 	if (gm)
 	{
-		//gamestate의 점수 1점 득점
-		//gm->GameState->PlayerArray
+		//점수 득점
+		UGameplayStatics::GetPlayerState(this, 0)->SetScore(UGameplayStatics::GetPlayerState(this, 0)->GetScore() + brickScore);
+		UE_LOG(LogTemp, Warning, TEXT("%f"), UGameplayStatics::GetPlayerState(this, 0)->GetScore());
 	}
 
-
+	
 	meshComp->SetHiddenInGame(true);
 	meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
@@ -88,21 +91,10 @@ void ABrickBase::AddScore()
 
 	destructibleMesh->AddForceAtLocation(hitDirection.GetSafeNormal() * 5000000.0f, GetActorLocation());
 
-
-	//FTimerHandle masterFieldTimer;
-	//GetWorldTimerManager().SetTimer(masterFieldTimer, FTimerDelegate::CreateLambda([&]()
-	//	{
-	//		if (field)
-	//		{
-	//			UE_LOG(LogTemp, Warning, TEXT("Field Destroy"));
-	//		}
-	//	}), 0.2f, false);
-
 	//3초 후에 완전히 파괴
 	FTimerHandle destroyTimer;
 	GetWorldTimerManager().SetTimer(destroyTimer, FTimerDelegate::CreateLambda([&]()
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Destroy"));
 			Destroy();
 		}), 3.0f, false);
 }

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Brick_2nd.h"
+#include "Brick_3rd.h"
 
 #include "BDGGGameMode.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
@@ -11,7 +11,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 
-void ABrick_2nd::AddScore()
+void ABrick_3rd::AddScore()
 {
 	//Super::AddScore();
 
@@ -28,7 +28,7 @@ void ABrick_2nd::AddScore()
 		if (gm)
 		{
 			//Á¡¼ö µæÁ¡
-			UGameplayStatics::GetPlayerState(this, 0)->SetScore(UGameplayStatics::GetPlayerState(this, 0)->GetScore() + brickScore2);
+			UGameplayStatics::GetPlayerState(this, 0)->SetScore(UGameplayStatics::GetPlayerState(this, 0)->GetScore() + brickScore3);
 			UE_LOG(LogTemp, Warning, TEXT("%f"), UGameplayStatics::GetPlayerState(this, 0)->GetScore());
 		}
 
