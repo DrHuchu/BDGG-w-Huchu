@@ -48,9 +48,9 @@ void UBDGGPlayerMoveComponent::SetupPlayerInput(UInputComponent* PlayerInputComp
 
 	PlayerInputComponent->BindAxis(TEXT("Vertical"), this, &UBDGGPlayerMoveComponent::OnAxisVertical);
 
-	PlayerInputComponent->BindAxis(TEXT("Look Up"), this, &UBDGGPlayerMoveComponent::OnAxisLookUp);
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &UBDGGPlayerMoveComponent::OnAxisLookUp);
 
-	PlayerInputComponent->BindAxis(TEXT("Turn Right"), this, &UBDGGPlayerMoveComponent::OnAxisTurnRight);
+	PlayerInputComponent->BindAxis(TEXT("TurnRight"), this, &UBDGGPlayerMoveComponent::OnAxisTurnRight);
 
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &UBDGGPlayerMoveComponent::OnActionJump);
 
@@ -78,15 +78,13 @@ void UBDGGPlayerMoveComponent::OnAxisVertical(float value)
 
 void UBDGGPlayerMoveComponent::OnAxisLookUp(float value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%f : pitch"), value)
-	// Pitch
+	
 	me->AddControllerPitchInput(value);
 }
 
 void UBDGGPlayerMoveComponent::OnAxisTurnRight(float value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%f : yaw"), value)
-	// Yaw
+	
 	me->AddControllerYawInput(value);
 }
 
