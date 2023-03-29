@@ -47,9 +47,13 @@ public:
 	class UTextBlock* TextBlock_RankScore4;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UVerticalBox* VerticalBox_Ranking;
-		
+
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidgetAnim))
 	class UWidgetAnimation* Anim_StartCount;
+	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidgetAnim))
+	class UWidgetAnimation* Anim_EndScoreChart;
+	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidgetAnim))
+	class UWidgetAnimation* Anim_EndText;
 
 	void RefreshRanking();
 
@@ -60,7 +64,7 @@ public:
 	int startCountNum = 3;
 
 	UPROPERTY(EditDefaultsOnly)
-		int playTime = 20;
+	int playTime = 120;
 
 	FTimerHandle countDownTimerHandle;
 	FTimerHandle startCountHandle;
@@ -68,4 +72,11 @@ public:
 	void CountDownTimer(int TimeInSec);
 	void StartWidgetPlay();
 	void UpdateMinAndSec();
+	void GameEnd();
+	void ResetScoreBeforeGameEnd();
+
+	int tempScore1;
+	int tempScore2;
+	int tempScore3;
+	int tempScore4;
 };

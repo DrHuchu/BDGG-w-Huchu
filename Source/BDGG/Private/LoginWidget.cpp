@@ -11,6 +11,9 @@
 #include "Components/TextBlock.h"
 #include "Components/ScrollBox.h"
 #include "BDGG/Public/BDGGGameInstance.h"
+#include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
+#include "Kismet/GameplayStatics.h"
 
 void ULoginWidget::NativeConstruct()
 {

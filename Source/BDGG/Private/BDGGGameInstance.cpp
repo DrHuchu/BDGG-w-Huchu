@@ -6,6 +6,8 @@
 #include "BDGGGameMode.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include "GameFramework/PlayerState.h"
+#include "Kismet/GameplayStatics.h"
 
 UBDGGGameInstance::UBDGGGameInstance()
 {
@@ -50,6 +52,8 @@ void UBDGGGameInstance::OnCreationSessionComplete(FName sessionName, bool bIsSuc
 	{
 		GetWorld()->ServerTravel("/Game/Maps/HuchuMap?Listen");
 	}
+
+	UGameplayStatics::GetPlayerState(GetWorld(), 0)->SetPlayerName(sessionID.ToString());
 }
 
 void UBDGGGameInstance::OnFindSessionComplete(bool bWasSuccessful)
@@ -98,13 +102,6 @@ void UBDGGGameInstance::OnJoinSessionComplete(FName sessionNameJoined, EOnJoinSe
 		{
 			pc->ClientTravel(joinAddress, ETravelType::TRAVEL_Absolute);
 		}
-		/*
-		ABDGGGameMode* gm = Cast<ABDGGGameMode>(GetWorld()->GetAuthGameMode());
-		if (gm)
-		{
-			gm->StartWidgetPlay();
-		}
-		*/
 	}
 }
 
