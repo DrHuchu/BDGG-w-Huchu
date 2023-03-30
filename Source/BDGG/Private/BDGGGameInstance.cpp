@@ -50,7 +50,7 @@ void UBDGGGameInstance::OnCreationSessionComplete(FName sessionName, bool bIsSuc
 
 	if (bIsSuccess)
 	{
-		GetWorld()->ServerTravel("/Game/Maps/HuchuMap?Listen");
+		GetWorld()->ServerTravel("/Game/Maps/HuchuMap_DesignTest?Listen");
 	}
 
 	UGameplayStatics::GetPlayerState(GetWorld(), 0)->SetPlayerName(sessionID.ToString());
