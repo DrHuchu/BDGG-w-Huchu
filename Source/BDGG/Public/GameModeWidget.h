@@ -79,4 +79,7 @@ public:
 	int tempScore2;
 	int tempScore3;
 	int tempScore4;
+
+	UPROPERTY(EditDefaultsOnly)
+	int scoreSpeed = 10;
 };
