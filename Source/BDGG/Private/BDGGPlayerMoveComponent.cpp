@@ -4,8 +4,8 @@
 #include "BDGGPlayerMoveComponent.h"
 #include "BDGGPlayer.h"
 #include <GameFramework/CharacterMovementComponent.h>
-#include "KismetAnimationLibrary.h"
-#include "GameFramework/Character.h"
+
+
 
 
 // Sets default values for this component's properties
@@ -26,7 +26,7 @@ void UBDGGPlayerMoveComponent::BeginPlay()
 	me = Cast<ABDGGPlayer>(GetOwner());
 
 	// 태어날 때 속력을 speedWalk로 설정하고싶다.
-	me->GetCharacterMovement()->MaxWalkSpeed = speedWalk;
+	me->GetCharacterMovement()->MaxWalkSpeed = 600;
 }
 
 
@@ -56,13 +56,10 @@ void UBDGGPlayerMoveComponent::SetupPlayerInput(UInputComponent* PlayerInputComp
 
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &UBDGGPlayerMoveComponent::OnActionJump);
 
-	PlayerInputComponent->BindAction(TEXT("Run"), IE_Pressed, this, &UBDGGPlayerMoveComponent::OnActionRunPressed);
+	//PlayerInputComponent->BindAction(TEXT("Run"), IE_Pressed, this, &UBDGGPlayerMoveComponent::OnActionRunPressed);
 
-	PlayerInputComponent->BindAction(TEXT("Run"), IE_Released, this, &UBDGGPlayerMoveComponent::OnActionRunReleased);
+	//PlayerInputComponent->BindAction(TEXT("Run"), IE_Released, this, &UBDGGPlayerMoveComponent::OnActionRunReleased);
 
-	PlayerInputComponent->BindAction(TEXT("Crouch"), IE_Pressed, this, &UBDGGPlayerMoveComponent::OnActionCrouchPressed);
-
-	PlayerInputComponent->BindAction(TEXT("Crouch"), IE_Released, this, &UBDGGPlayerMoveComponent::OnActionCrouchReleased);
 }
 
 
@@ -103,59 +100,4 @@ void UBDGGPlayerMoveComponent::OnActionRunReleased()
 {
 	me->GetCharacterMovement()->MaxWalkSpeed = speedWalk;
 }
-void UBDGGPlayerMoveComponent::OnActionCrouchPressed()
-{
-	me->GetCharacterMovement()->MaxWalkSpeedCrouched = speedCrouch;
-	me->Crouch();
-}
-void UBDGGPlayerMoveComponent::OnActionCrouchReleased()
-{
-	me->GetCharacterMovement()->MaxWalkSpeedCrouched = speedWalk;
-	me->UnCrouch();
-}
 
-void UBDGGPlayerMoveComponent::NativeBeginPlay()
-{
-	Super::NativeBeginPlay();
-	me = Cast<ABDGGPlayer>(GetOwningActor());
-}
-
-void UBDGGPlayerMoveComponent::NativeUpdateAnimation(float DeltaSeconds)
-{
-	Super::NativeUpdateAnimation(DeltaSeconds);
-
-	//애니메이션 미리보기 예외 처리
-	if (me == nullptr)
-	{
-		return;
-	}
-	moveSpeed = me->GetVelocity().Length();
-
-	
-	/*
-	//FVector forwarVec = me->GetActorForwardVector();
-	FVector forwarVec = FRotationMatrix(me->GetActorRotation().GetScaledAxis(EAxis::X));
-	FVector normalVelocity = me->GetVelocity().GetSafeNormal2D();
-
-	//회전 각도 계산
-	double cosTheta = FVector::DotProduct(forwarVec, normalVelocity);
-	double rad = FMath::Acos(cosTheta);
-	float degree = FMath::RadiansToDegrees(rad);
-	FVector rightVec = FRotationMatrix(me->GetActorRotation()).GetUnitAxis(EAxis::Y);
-	
-	//회전 방향 계산
-	cosTheta = FVector::DotProduct(rightVec, normalVelocity);
-	rotAngle = cosTheta >=0 ? degree : degree * -1.0f;
-	*/
-
-	//rotAngle = CalculateDirection(me->GetVelocity(), me->GetActorRotation());
-	rotAngle = UKismetAnimationLibrary::CalculateDirection(me->GetVelocity(), me->GetActorRotation());
-
-	bIsJumping = me->GetCharacterMovement()->IsFalling();
-
-	FRotator viewRot = me->GetBaseAimRotation();
-	FRotator playerRot = me->GetActorRotation();
-	FRotator deltaRot = playerRot - viewRot;
-	pitch = deltaRot.GetNormalized().pitch;
-
-}
