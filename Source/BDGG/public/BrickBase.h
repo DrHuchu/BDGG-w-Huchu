@@ -29,9 +29,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Brick")
 	class UBoxComponent* boxComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Brick")
-	class UGeometryCollectionComponent* destructibleMesh;
-
 
 	UPROPERTY(EditAnywhere, Category = "Brick")
 	FVector hitDirection;
@@ -53,9 +50,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Brick")
 	bool bIsBroken = false;
 
-	UFUNCTION()
-	void ParticleDownsize(UPrimitiveComponent* ChangedComponent, EComponentPhysicsStateChange StateChange);
-
 	UPROPERTY(EditAnywhere, Category = "Brick")
 	int32 brickScore = 100;
+
+	UPROPERTY(EditAnywhere, Category = "Brick")
+	class UNiagaraSystem* niagara;
 };
