@@ -4,10 +4,9 @@
 #include "Brick_2nd.h"
 
 #include "BDGGGameMode.h"
-#include "GeometryCollection/GeometryCollectionComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/PrimitiveComponent.h"
 #include "Engine/EngineTypes.h"
-#include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -32,18 +31,10 @@ void ABrick_2nd::AddScore()
 			UE_LOG(LogTemp, Warning, TEXT("%f"), UGameplayStatics::GetPlayerState(this, 0)->GetScore());
 		}
 
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), niagara, GetActorLocation(), GetActorRotation());
 
 		meshComp->SetHiddenInGame(true);
 		meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-		AFieldSystemActor* field = GetWorld()->SpawnActor<class AFieldSystemActor>(masterField, destructibleMesh->GetComponentLocation(), destructibleMesh->GetComponentRotation());
-		destructibleMesh->SetVisibility(true);
-		destructibleMesh->SetSimulatePhysics(true);
-		destructibleMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		destructibleMesh->SetCollisionProfileName(FName("Destructible"));
-
-		destructibleMesh->AddForceAtLocation(hitDirection.GetSafeNormal() * 50000000.0f, GetActorLocation());
-
 
 		//3초 후에 완전히 파괴
 		FTimerHandle destroyTimer;

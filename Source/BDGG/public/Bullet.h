@@ -31,7 +31,7 @@ public:
 	class ABrickBase* brick;
 
 	UPROPERTY(VisibleAnywhere, Category = "Bullet")
-	class AUnbreakableBrick* unbreakable;
+	class AUnbreakable* unbreakable;
 
 	//함수 관련
 	UFUNCTION()
