@@ -37,8 +37,7 @@ public:
 	void OnActionJump();
 	void OnActionRunPressed();
 	void OnActionRunReleased();
-	void OnActionCrouchPressed();
-	void OnActionCrouchReleased();
+
 
 	float speedRun = 600; // LShift : Run(600)
 	float speedWalk = 400; // None : Walk(400)
@@ -47,5 +46,4 @@ public:
 	FVector direction;
 	float walkSpeed = 600;
 
-		
 };

@@ -6,6 +6,8 @@
 #include <GameFramework/CharacterMovementComponent.h>
 
 
+
+
 // Sets default values for this component's properties
 UBDGGPlayerMoveComponent::UBDGGPlayerMoveComponent()
 {
@@ -24,7 +26,7 @@ void UBDGGPlayerMoveComponent::BeginPlay()
 	me = Cast<ABDGGPlayer>(GetOwner());
 
 	// 태어날 때 속력을 speedWalk로 설정하고싶다.
-	me->GetCharacterMovement()->MaxWalkSpeed = speedWalk;
+	me->GetCharacterMovement()->MaxWalkSpeed = 600;
 }
 
 
@@ -48,19 +50,16 @@ void UBDGGPlayerMoveComponent::SetupPlayerInput(UInputComponent* PlayerInputComp
 
 	PlayerInputComponent->BindAxis(TEXT("Vertical"), this, &UBDGGPlayerMoveComponent::OnAxisVertical);
 
-	PlayerInputComponent->BindAxis(TEXT("Look Up"), this, &UBDGGPlayerMoveComponent::OnAxisLookUp);
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &UBDGGPlayerMoveComponent::OnAxisLookUp);
 
-	PlayerInputComponent->BindAxis(TEXT("Turn Right"), this, &UBDGGPlayerMoveComponent::OnAxisTurnRight);
+	PlayerInputComponent->BindAxis(TEXT("TurnRight"), this, &UBDGGPlayerMoveComponent::OnAxisTurnRight);
 
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &UBDGGPlayerMoveComponent::OnActionJump);
 
-	PlayerInputComponent->BindAction(TEXT("Run"), IE_Pressed, this, &UBDGGPlayerMoveComponent::OnActionRunPressed);
+	//PlayerInputComponent->BindAction(TEXT("Run"), IE_Pressed, this, &UBDGGPlayerMoveComponent::OnActionRunPressed);
 
-	PlayerInputComponent->BindAction(TEXT("Run"), IE_Released, this, &UBDGGPlayerMoveComponent::OnActionRunReleased);
+	//PlayerInputComponent->BindAction(TEXT("Run"), IE_Released, this, &UBDGGPlayerMoveComponent::OnActionRunReleased);
 
-	PlayerInputComponent->BindAction(TEXT("Crouch"), IE_Pressed, this, &UBDGGPlayerMoveComponent::OnActionCrouchPressed);
-
-	PlayerInputComponent->BindAction(TEXT("Crouch"), IE_Released, this, &UBDGGPlayerMoveComponent::OnActionCrouchReleased);
 }
 
 
@@ -78,15 +77,13 @@ void UBDGGPlayerMoveComponent::OnAxisVertical(float value)
 
 void UBDGGPlayerMoveComponent::OnAxisLookUp(float value)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("%f : pitch"), value)
-	// Pitch
+	
 	me->AddControllerPitchInput(value);
 }
 
 void UBDGGPlayerMoveComponent::OnAxisTurnRight(float value)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("%f : yaw"), value)
-	// Yaw
+	
 	me->AddControllerYawInput(value);
 }
 
@@ -103,13 +100,4 @@ void UBDGGPlayerMoveComponent::OnActionRunReleased()
 {
 	me->GetCharacterMovement()->MaxWalkSpeed = speedWalk;
 }
-void UBDGGPlayerMoveComponent::OnActionCrouchPressed()
-{
-	me->GetCharacterMovement()->MaxWalkSpeedCrouched = speedCrouch;
-	me->Crouch();
-}
-void UBDGGPlayerMoveComponent::OnActionCrouchReleased()
-{
-	me->GetCharacterMovement()->MaxWalkSpeedCrouched = speedWalk;
-	me->UnCrouch();
-}
+

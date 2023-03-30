@@ -162,6 +162,7 @@ void UGameModeWidget::UpdateMinAndSec()
 
 void UGameModeWidget::GameEnd()
 {
+	scoreSpeed = 100;
 	ResetScoreBeforeGameEnd();
 	PlayAnimation(Anim_EndScoreChart);
 	TextBlock_StartCount->SetText(FText::FromString("Win!"));
