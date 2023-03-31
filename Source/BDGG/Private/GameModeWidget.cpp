@@ -50,9 +50,9 @@ void UGameModeWidget::RefreshRanking()
 		TextBlock_RankID3->SetVisibility(ESlateVisibility::Hidden);
 		TextBlock_RankID4->SetVisibility(ESlateVisibility::Hidden);
 		// score Ãâ·Â
-		if (tempScore1 <= GetWorld()->GetGameState()->PlayerArray[0]->GetScore())
+		if (tempScore1 < GetWorld()->GetGameState()->PlayerArray[0]->GetScore())
 		{
-			TextBlock_RankScore1->SetText(FText::AsNumber(tempScore1 += 10));
+			TextBlock_RankScore1->SetText(FText::AsNumber(tempScore1 += scoreSpeed));
 		}
 		TextBlock_RankScore2->SetVisibility(ESlateVisibility::Hidden);
 		TextBlock_RankScore3->SetVisibility(ESlateVisibility::Hidden);
@@ -162,7 +162,7 @@ void UGameModeWidget::UpdateMinAndSec()
 
 void UGameModeWidget::GameEnd()
 {
-	scoreSpeed = 100;
+	scoreSpeed = 50;
 	ResetScoreBeforeGameEnd();
 	PlayAnimation(Anim_EndScoreChart);
 	TextBlock_StartCount->SetText(FText::FromString("Win!"));
