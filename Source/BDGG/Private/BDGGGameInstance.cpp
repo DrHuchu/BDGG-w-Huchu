@@ -64,7 +64,7 @@ void UBDGGGameInstance::OnCreationSessionComplete(FName sessionName, bool bIsSuc
 	}
 
 	//UGameplayStatics::GetPlayerState(GetWorld(), 0)->SetPlayerName(sessionID.ToString());
-	GetFirstLocalPlayerController()->GetPawn()->GetPlayerState()->SetPlayerName(sessionID.ToString());
+	//GetFirstLocalPlayerController()->GetPawn()->GetPlayerState()->SetPlayerName(sessionID.ToString());
 }
 
 void UBDGGGameInstance::OnFindSessionComplete(bool bWasSuccessful)

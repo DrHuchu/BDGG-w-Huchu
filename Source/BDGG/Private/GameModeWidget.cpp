@@ -30,7 +30,7 @@ void UGameModeWidget::NativeConstruct()
 void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	RefreshRanking();
+	RefreshRank();
 }
 
 void UGameModeWidget::RefreshRanking()
@@ -101,8 +101,14 @@ void UGameModeWidget::RefreshRanking()
 		TextBlock_RankID3->SetVisibility(ESlateVisibility::Hidden);
 		TextBlock_RankID4->SetVisibility(ESlateVisibility::Hidden);
 
-		TextBlock_RankScore1->SetText(FText::AsNumber(playerStateArray[0]->GetScore()));
-		TextBlock_RankScore2->SetText(FText::AsNumber(playerStateArray[1]->GetScore()));
+		if (tempScore1 < playerStateArray[0]->GetScore())
+		{
+			TextBlock_RankScore1->SetText(FText::AsNumber(tempScore1 += scoreSpeed));
+		}
+		if (tempScore2 < playerStateArray[1]->GetScore())
+		{
+			TextBlock_RankScore2->SetText(FText::AsNumber(tempScore2 += scoreSpeed));
+		}
 		TextBlock_RankScore2->SetVisibility(ESlateVisibility::Visible);
 		TextBlock_RankScore3->SetVisibility(ESlateVisibility::Hidden);
 		TextBlock_RankScore4->SetVisibility(ESlateVisibility::Hidden);
@@ -133,6 +139,27 @@ void UGameModeWidget::RefreshRanking()
 		TextBlock_RankScore4->SetText(FText::AsNumber(GetWorld()->GetGameState()->PlayerArray[3]->GetScore()));
 		TextBlock_RankScore4->SetVisibility(ESlateVisibility::Visible);
 		break;
+	}
+}
+
+void UGameModeWidget::RefreshRank()
+{
+	int arraySize = GetWorld()->GetGameState()->PlayerArray.Num();
+	auto playerStateArray = GetWorld()->GetGameState()->PlayerArray;
+
+	TextBlock_RankID1->SetText(FText::FromString(playerStateArray[0]->GetPlayerName()));
+	if (tempScore1 < playerStateArray[0]->GetScore())
+	{
+		TextBlock_RankScore1->SetText(FText::AsNumber(tempScore1 += scoreSpeed));
+	}
+
+	if (arraySize == 2)
+	{
+		TextBlock_RankID2->SetText(FText::FromString(playerStateArray[1]->GetPlayerName()));
+		if (tempScore2 < playerStateArray[1]->GetScore())
+		{
+			TextBlock_RankScore2->SetText(FText::AsNumber(tempScore2 += scoreSpeed));
+		}
 	}
 }
 

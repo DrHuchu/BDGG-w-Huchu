@@ -56,6 +56,7 @@ public:
 	class UWidgetAnimation* Anim_EndText;
 
 	void RefreshRanking();
+	void RefreshRank();
 
 	// 타이머 관련
 	int countDownTime;

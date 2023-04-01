@@ -7,6 +7,7 @@
 #include "GameModeWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 
 void ULobbyWidget::NativeConstruct()
@@ -40,6 +41,8 @@ void ULobbyWidget::NativeConstruct()
 	UGameplayStatics::SetGamePaused(GetWorld(), true);
 
 	gi->GetFirstLocalPlayerController()->SetShowMouseCursor(true);
+
+	gi->GetFirstLocalPlayerController()->GetPawn()->GetPlayerState()->SetPlayerName(gi->sessionID.ToString());
 }
 
 void ULobbyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
