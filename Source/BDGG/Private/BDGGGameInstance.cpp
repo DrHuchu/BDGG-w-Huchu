@@ -8,6 +8,8 @@
 #include "OnlineSessionSettings.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "LobbyWidget.h"
+#include "GameModeWidget.h"
 
 UBDGGGameInstance::UBDGGGameInstance()
 {
@@ -17,6 +19,13 @@ UBDGGGameInstance::UBDGGGameInstance()
 	if (gameModeWidgetTemp.Succeeded())
 	{
 		gameModeWidgetFactory = gameModeWidgetTemp.Class;
+	}
+
+
+	static ConstructorHelpers::FClassFinder<ULobbyWidget> lobbyWidgetTemp(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/LTG/UI/WBP_LobbyWidget.WBP_LobbyWidget_C'"));
+	if (lobbyWidgetTemp.Succeeded())
+	{
+		lobbyWidgetFactory = lobbyWidgetTemp.Class;
 	}
 }
 
@@ -41,6 +50,7 @@ void UBDGGGameInstance::Init()
 	UE_LOG(LogTemp, Warning, TEXT("Platform Is : %s"), *platformName);
 
 	gameModeWidgetUI = CreateWidget<UGameModeWidget>(GetWorld(), gameModeWidgetFactory);
+	lobbyWidgetUI = CreateWidget<ULobbyWidget>(GetWorld(), lobbyWidgetFactory);
 }
 
 void UBDGGGameInstance::OnCreationSessionComplete(FName sessionName, bool bIsSuccess)
