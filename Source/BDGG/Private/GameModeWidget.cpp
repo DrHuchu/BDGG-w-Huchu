@@ -20,7 +20,8 @@ void UGameModeWidget::NativeConstruct()
 	UBDGGGameInstance* gi = Cast<UBDGGGameInstance>(GetGameInstance());
 	if (gi)
 	{
-		GetWorld()->GetGameState()->PlayerArray[0]->SetPlayerName(gi->sessionID.ToString());
+		//GetWorld()->GetGameState()->PlayerArray[0]->SetPlayerName(gi->sessionID.ToString());
+		gi->GetFirstLocalPlayerController()->GetPawn()->GetPlayerState()->SetPlayerName(gi->sessionID.ToString());
 	}
 	// 시작 카운트다운
 	StartWidgetPlay();
@@ -34,10 +35,42 @@ void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void UGameModeWidget::RefreshRanking()
 {
-	//gm->GameState->PlayerArray
-	// array를 sort 한다
-
 	int arraySize = GetWorld()->GetGameState()->PlayerArray.Num();
+
+	
+	// 플레이어 스테이트 배열을 가져와서 임시변수에 복사한다
+	auto playerStateArray = GetWorld()->GetGameState()->PlayerArray;
+
+	/*
+	// 임시변수에 복사한 배열을 점수에 따라 sort한다
+	playerStateArray.Sort([](const TObjectPtr<APlayerState>& A, const TObjectPtr<APlayerState>& B)
+		{
+			return A->GetScore() < B->GetScore();
+		});
+	*/
+
+	/*
+	TArray<APlayerState*> playerStateArray;
+	playerStateArray.Reserve(arraySize);
+
+	for (APlayerState* Player : GetWorld()->GetGameState()->PlayerArray)
+	{
+			const int32 Score = Player->GetScore();
+			int32 InsertIndex = arraySize - 1;
+
+			while (InsertIndex > 0 && playerStateArray[InsertIndex]->GetScore() > Score)
+			{
+				InsertIndex--;
+			}
+
+			playerStateArray.Insert(Player, InsertIndex);
+		}
+	*/
+
+
+
+
+	// sort한 배열의 순서대로 점수표에 출력한다
 
 	switch (arraySize)
 	{
@@ -45,12 +78,15 @@ void UGameModeWidget::RefreshRanking()
 		//임시점수
 		//GetWorld()->GetGameState()->PlayerArray[0]->SetScore(2000);
 		// id 출력
-		TextBlock_RankID1->SetText(FText::FromString(GetWorld()->GetGameState()->PlayerArray[0]->GetPlayerName()));
+		TextBlock_RankID1->SetText(FText::FromString(playerStateArray[0]->GetPlayerName()));
+		//TextBlock_RankID1->SetText(FText::FromString(GetGameInstance()->GetFirstLocalPlayerController()->GetPawn()->GetPlayerState()->GetPlayerName()));
+		
+		
 		TextBlock_RankID2->SetVisibility(ESlateVisibility::Hidden);
 		TextBlock_RankID3->SetVisibility(ESlateVisibility::Hidden);
 		TextBlock_RankID4->SetVisibility(ESlateVisibility::Hidden);
 		// score 출력
-		if (tempScore1 < GetWorld()->GetGameState()->PlayerArray[0]->GetScore())
+		if (tempScore1 < playerStateArray[0]->GetScore())
 		{
 			TextBlock_RankScore1->SetText(FText::AsNumber(tempScore1 += scoreSpeed));
 		}
@@ -59,14 +95,14 @@ void UGameModeWidget::RefreshRanking()
 		TextBlock_RankScore4->SetVisibility(ESlateVisibility::Hidden);
 		break;
 	case 2:
-		TextBlock_RankID1->SetText(FText::FromString(GetWorld()->GetGameState()->PlayerArray[0]->GetPlayerName()));
-		TextBlock_RankID2->SetText(FText::FromString(GetWorld()->GetGameState()->PlayerArray[1]->GetPlayerName()));
+		TextBlock_RankID1->SetText(FText::FromString(playerStateArray[0]->GetPlayerName()));
+		TextBlock_RankID2->SetText(FText::FromString(playerStateArray[1]->GetPlayerName()));
 		TextBlock_RankID2->SetVisibility(ESlateVisibility::Visible);
 		TextBlock_RankID3->SetVisibility(ESlateVisibility::Hidden);
 		TextBlock_RankID4->SetVisibility(ESlateVisibility::Hidden);
 
-		TextBlock_RankScore1->SetText(FText::AsNumber(GetWorld()->GetGameState()->PlayerArray[0]->GetScore()));
-		TextBlock_RankScore2->SetText(FText::AsNumber(GetWorld()->GetGameState()->PlayerArray[1]->GetScore()));
+		TextBlock_RankScore1->SetText(FText::AsNumber(playerStateArray[0]->GetScore()));
+		TextBlock_RankScore2->SetText(FText::AsNumber(playerStateArray[1]->GetScore()));
 		TextBlock_RankScore2->SetVisibility(ESlateVisibility::Visible);
 		TextBlock_RankScore3->SetVisibility(ESlateVisibility::Hidden);
 		TextBlock_RankScore4->SetVisibility(ESlateVisibility::Hidden);
