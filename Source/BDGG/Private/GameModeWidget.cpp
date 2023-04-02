@@ -20,145 +20,56 @@ void UGameModeWidget::NativeConstruct()
 	UBDGGGameInstance* gi = Cast<UBDGGGameInstance>(GetGameInstance());
 	if (gi)
 	{
-		//GetWorld()->GetGameState()->PlayerArray[0]->SetPlayerName(gi->sessionID.ToString());
-		gi->GetFirstLocalPlayerController()->GetPawn()->GetPlayerState()->SetPlayerName(gi->sessionID.ToString());
+		//gi->GetFirstLocalPlayerController()->GetPawn()->GetPlayerState()->SetPlayerName(gi->sessionID.ToString());
+		GetOwningPlayerState()->SetPlayerName(gi->sessionID.ToString());
 	}
 	// 시작 카운트다운
 	StartWidgetPlay();
+
+	// 초기화에 쓰일 빈 구조체
+	tempStruct.name = {};
+	tempStruct.score = 0;
+	// 랭킹표 구성요소들을 담은 배열
+	textblockRankIdArray = { TextBlock_RankID1, TextBlock_RankID2, TextBlock_RankID3, TextBlock_RankID4 };
+	textblockRankScoreArray = { TextBlock_RankScore1, TextBlock_RankScore2, TextBlock_RankScore3, TextBlock_RankScore4 };
+	tempScoreArray = { tempScore1, tempScore2, tempScore3, tempScore4 };
 }
 
 void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	RefreshRank();
+	// 틱마다 랭킹 갱신
+	RefreshRanking();
 }
 
 void UGameModeWidget::RefreshRanking()
 {
-	int arraySize = GetWorld()->GetGameState()->PlayerArray.Num();
-
-	
-	// 플레이어 스테이트 배열을 가져와서 임시변수에 복사한다
+	// playerstate array 가져오기
 	auto playerStateArray = GetWorld()->GetGameState()->PlayerArray;
-
-	/*
-	// 임시변수에 복사한 배열을 점수에 따라 sort한다
-	playerStateArray.Sort([](const TObjectPtr<APlayerState>& A, const TObjectPtr<APlayerState>& B)
+	// arraysize 가져오기
+	int arraySize = playerStateArray.Num();
+	// 정보 담을 구조체 배열 만들기
+	TArray<FPlayerInfo> nameScoreArr;
+	// 배열 초기화
+	nameScoreArr.Init(tempStruct, arraySize);
+	// 구조체에 각각 이름과 점수 채워주기
+	for(int i = 0; i < arraySize; i++)
+	{
+		nameScoreArr[i].name = playerStateArray[i]->GetPlayerName();
+		nameScoreArr[i].score = playerStateArray[i]->GetScore();
+	}
+	// 구조체 배열을 점수에 따라 정렬
+	nameScoreArr.Sort([](const FPlayerInfo& A, const FPlayerInfo& B)
 		{
-			return A->GetScore() < B->GetScore();
+			return A.score > B.score;
 		});
-	*/
-
-	/*
-	TArray<APlayerState*> playerStateArray;
-	playerStateArray.Reserve(arraySize);
-
-	for (APlayerState* Player : GetWorld()->GetGameState()->PlayerArray)
+	// 정렬된 순서대로 랭킹표에 출력
+	for(int i = 0; i < arraySize; i++)
 	{
-			const int32 Score = Player->GetScore();
-			int32 InsertIndex = arraySize - 1;
-
-			while (InsertIndex > 0 && playerStateArray[InsertIndex]->GetScore() > Score)
-			{
-				InsertIndex--;
-			}
-
-			playerStateArray.Insert(Player, InsertIndex);
-		}
-	*/
-
-
-
-
-	// sort한 배열의 순서대로 점수표에 출력한다
-
-	switch (arraySize)
-	{
-	case 1:
-		//임시점수
-		//GetWorld()->GetGameState()->PlayerArray[0]->SetScore(2000);
-		// id 출력
-		TextBlock_RankID1->SetText(FText::FromString(playerStateArray[0]->GetPlayerName()));
-		//TextBlock_RankID1->SetText(FText::FromString(GetGameInstance()->GetFirstLocalPlayerController()->GetPawn()->GetPlayerState()->GetPlayerName()));
-		
-		
-		TextBlock_RankID2->SetVisibility(ESlateVisibility::Hidden);
-		TextBlock_RankID3->SetVisibility(ESlateVisibility::Hidden);
-		TextBlock_RankID4->SetVisibility(ESlateVisibility::Hidden);
-		// score 출력
-		if (tempScore1 < playerStateArray[0]->GetScore())
+		textblockRankIdArray[i]->SetText(FText::FromString(nameScoreArr[i].name));
+		if (tempScoreArray[i] < nameScoreArr[i].score)
 		{
-			TextBlock_RankScore1->SetText(FText::AsNumber(tempScore1 += scoreSpeed));
-		}
-		TextBlock_RankScore2->SetVisibility(ESlateVisibility::Hidden);
-		TextBlock_RankScore3->SetVisibility(ESlateVisibility::Hidden);
-		TextBlock_RankScore4->SetVisibility(ESlateVisibility::Hidden);
-		break;
-	case 2:
-		TextBlock_RankID1->SetText(FText::FromString(playerStateArray[0]->GetPlayerName()));
-		TextBlock_RankID2->SetText(FText::FromString(playerStateArray[1]->GetPlayerName()));
-		TextBlock_RankID2->SetVisibility(ESlateVisibility::Visible);
-		TextBlock_RankID3->SetVisibility(ESlateVisibility::Hidden);
-		TextBlock_RankID4->SetVisibility(ESlateVisibility::Hidden);
-
-		if (tempScore1 < playerStateArray[0]->GetScore())
-		{
-			TextBlock_RankScore1->SetText(FText::AsNumber(tempScore1 += scoreSpeed));
-		}
-		if (tempScore2 < playerStateArray[1]->GetScore())
-		{
-			TextBlock_RankScore2->SetText(FText::AsNumber(tempScore2 += scoreSpeed));
-		}
-		TextBlock_RankScore2->SetVisibility(ESlateVisibility::Visible);
-		TextBlock_RankScore3->SetVisibility(ESlateVisibility::Hidden);
-		TextBlock_RankScore4->SetVisibility(ESlateVisibility::Hidden);
-		break;
-	case 3:
-		TextBlock_RankID1->SetText(FText::FromString(GetWorld()->GetGameState()->PlayerArray[0]->GetPlayerName()));
-		TextBlock_RankID2->SetText(FText::FromString(GetWorld()->GetGameState()->PlayerArray[1]->GetPlayerName()));
-		TextBlock_RankID3->SetText(FText::FromString(GetWorld()->GetGameState()->PlayerArray[2]->GetPlayerName()));
-		TextBlock_RankID3->SetVisibility(ESlateVisibility::Visible);
-		TextBlock_RankID4->SetVisibility(ESlateVisibility::Hidden);
-
-		TextBlock_RankScore1->SetText(FText::AsNumber(GetWorld()->GetGameState()->PlayerArray[0]->GetScore()));
-		TextBlock_RankScore2->SetText(FText::AsNumber(GetWorld()->GetGameState()->PlayerArray[1]->GetScore()));
-		TextBlock_RankScore3->SetText(FText::AsNumber(GetWorld()->GetGameState()->PlayerArray[2]->GetScore()));
-		TextBlock_RankScore3->SetVisibility(ESlateVisibility::Visible);
-		TextBlock_RankScore4->SetVisibility(ESlateVisibility::Hidden);
-		break;
-	case 4:
-		TextBlock_RankID1->SetText(FText::FromString(GetWorld()->GetGameState()->PlayerArray[0]->GetPlayerName()));
-		TextBlock_RankID2->SetText(FText::FromString(GetWorld()->GetGameState()->PlayerArray[1]->GetPlayerName()));
-		TextBlock_RankID3->SetText(FText::FromString(GetWorld()->GetGameState()->PlayerArray[2]->GetPlayerName()));
-		TextBlock_RankID4->SetText(FText::FromString(GetWorld()->GetGameState()->PlayerArray[3]->GetPlayerName()));
-		TextBlock_RankID4->SetVisibility(ESlateVisibility::Visible);
-
-		TextBlock_RankScore1->SetText(FText::AsNumber(GetWorld()->GetGameState()->PlayerArray[0]->GetScore()));
-		TextBlock_RankScore2->SetText(FText::AsNumber(GetWorld()->GetGameState()->PlayerArray[1]->GetScore()));
-		TextBlock_RankScore3->SetText(FText::AsNumber(GetWorld()->GetGameState()->PlayerArray[2]->GetScore()));
-		TextBlock_RankScore4->SetText(FText::AsNumber(GetWorld()->GetGameState()->PlayerArray[3]->GetScore()));
-		TextBlock_RankScore4->SetVisibility(ESlateVisibility::Visible);
-		break;
-	}
-}
-
-void UGameModeWidget::RefreshRank()
-{
-	int arraySize = GetWorld()->GetGameState()->PlayerArray.Num();
-	auto playerStateArray = GetWorld()->GetGameState()->PlayerArray;
-
-	TextBlock_RankID1->SetText(FText::FromString(playerStateArray[0]->GetPlayerName()));
-	if (tempScore1 < playerStateArray[0]->GetScore())
-	{
-		TextBlock_RankScore1->SetText(FText::AsNumber(tempScore1 += scoreSpeed));
-	}
-
-	if (arraySize == 2)
-	{
-		TextBlock_RankID2->SetText(FText::FromString(playerStateArray[1]->GetPlayerName()));
-		if (tempScore2 < playerStateArray[1]->GetScore())
-		{
-			TextBlock_RankScore2->SetText(FText::AsNumber(tempScore2 += scoreSpeed));
+			textblockRankScoreArray[i]->SetText(FText::AsNumber(tempScoreArray[i] += scoreSpeed));
 		}
 	}
 }

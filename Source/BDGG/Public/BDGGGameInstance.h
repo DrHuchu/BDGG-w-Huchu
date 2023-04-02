@@ -46,13 +46,4 @@ public:
 	void FindMySession();
 	void JoinMySession(int sessionIndex);
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class UGameModeWidget> gameModeWidgetFactory;
-	UPROPERTY(BlueprintReadOnly)
-	class UGameModeWidget* gameModeWidgetUI;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class ULobbyWidget> lobbyWidgetFactory;
-	UPROPERTY(BlueprintReadOnly)
-	class ULobbyWidget* lobbyWidgetUI;
 };

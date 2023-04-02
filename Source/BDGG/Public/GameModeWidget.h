@@ -6,9 +6,17 @@
 #include "Blueprint/UserWidget.h"
 #include "GameModeWidget.generated.h"
 
-/**
- * 
- */
+USTRUCT(BlueprintType)
+struct FPlayerInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly)
+	FString name;
+	UPROPERTY(BlueprintReadOnly)
+	float score;
+};
+
 UCLASS()
 class BDGG_API UGameModeWidget : public UUserWidget
 {
@@ -56,7 +64,6 @@ public:
 	class UWidgetAnimation* Anim_EndText;
 
 	void RefreshRanking();
-	void RefreshRank();
 
 	// 타이머 관련
 	int countDownTime;
@@ -83,4 +90,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	int scoreSpeed = 10;
+
+	FPlayerInfo tempStruct;
+	UPROPERTY()
+	TArray <UTextBlock*> textblockRankIdArray;
+	UPROPERTY()
+	TArray <UTextBlock*> textblockRankScoreArray;
+	TArray <int> tempScoreArray;
 };

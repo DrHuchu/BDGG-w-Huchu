@@ -8,25 +8,10 @@
 #include "OnlineSessionSettings.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
-#include "LobbyWidget.h"
-#include "GameModeWidget.h"
 
 UBDGGGameInstance::UBDGGGameInstance()
 {
 	sessionID = "BDGG";
-
-	static ConstructorHelpers::FClassFinder<UGameModeWidget> gameModeWidgetTemp(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/LTG/UI/WBP_GameModeWidget.WBP_GameModeWidget_C'"));
-	if (gameModeWidgetTemp.Succeeded())
-	{
-		gameModeWidgetFactory = gameModeWidgetTemp.Class;
-	}
-
-
-	static ConstructorHelpers::FClassFinder<ULobbyWidget> lobbyWidgetTemp(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/LTG/UI/WBP_LobbyWidget.WBP_LobbyWidget_C'"));
-	if (lobbyWidgetTemp.Succeeded())
-	{
-		lobbyWidgetFactory = lobbyWidgetTemp.Class;
-	}
 }
 
 void UBDGGGameInstance::Init()
@@ -49,8 +34,6 @@ void UBDGGGameInstance::Init()
 	FString platformName = subsys->GetSubsystemName().ToString();
 	UE_LOG(LogTemp, Warning, TEXT("Platform Is : %s"), *platformName);
 
-	gameModeWidgetUI = CreateWidget<UGameModeWidget>(GetWorld(), gameModeWidgetFactory);
-	lobbyWidgetUI = CreateWidget<ULobbyWidget>(GetWorld(), lobbyWidgetFactory);
 }
 
 void UBDGGGameInstance::OnCreationSessionComplete(FName sessionName, bool bIsSuccess)
@@ -62,9 +45,6 @@ void UBDGGGameInstance::OnCreationSessionComplete(FName sessionName, bool bIsSuc
 	{
 		GetWorld()->ServerTravel("/Game/Maps/HuchuMap_DesignTest?Listen");
 	}
-
-	//UGameplayStatics::GetPlayerState(GetWorld(), 0)->SetPlayerName(sessionID.ToString());
-	//GetFirstLocalPlayerController()->GetPawn()->GetPlayerState()->SetPlayerName(sessionID.ToString());
 }
 
 void UBDGGGameInstance::OnFindSessionComplete(bool bWasSuccessful)

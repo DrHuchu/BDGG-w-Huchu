@@ -15,22 +15,27 @@ class BDGG_API ULobbyWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	UPROPERTY()
-		class UBDGGGameInstance* gi;
+	class UBDGGGameInstance* gi;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		class UTextBlock* text_LobbyName1;
+	class UTextBlock* text_LobbyName1;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		class UTextBlock* text_LobbyName2;
+	class UTextBlock* text_LobbyName2;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		class UTextBlock* text_LobbyName3;
+	class UTextBlock* text_LobbyName3;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		class UTextBlock* text_LobbyName4;
+	class UTextBlock* text_LobbyName4;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		class UButton* btn_GameStart;
+	class UButton* btn_GameStart;
+	UPROPERTY()
+	TArray<UTextBlock*> lobbyNameArray;
 
 	UFUNCTION()
-		void LobbyGameStart();
+	void LobbyGameStart();
+	UFUNCTION()
+	void RefreshLobbyName();
 };

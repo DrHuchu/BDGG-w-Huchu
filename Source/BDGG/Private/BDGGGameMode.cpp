@@ -5,6 +5,8 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Components/TextBlock.h"
 #include "GameModeWidget.h"
+#include "BDGGGameInstance.h"
+#include "GameFramework/PlayerState.h"
 
 ABDGGGameMode::ABDGGGameMode()
 {
@@ -20,4 +22,12 @@ void ABDGGGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+}
+
+void ABDGGGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+
+	auto gi = Cast<UBDGGGameInstance>(GetGameInstance());
+	NewPlayer->PlayerState->SetPlayerName(gi->sessionID.ToString());
 }
