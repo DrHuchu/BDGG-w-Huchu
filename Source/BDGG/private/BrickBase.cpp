@@ -56,6 +56,8 @@ void ABrickBase::OnBlockHit()
 
 void ABrickBase::AddScore()
 {
+	auto owningPawn = Cast<APawn>(GetOwner());
+
 	if (gm)
 	{
 		//점수 득점
@@ -68,8 +70,11 @@ void ABrickBase::AddScore()
 	meshComp->SetHiddenInGame(true);
 	meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	scoreWidget->SetVisibility(true);
-	scoreWidget->SetComponentTickEnabled(true);
+	if(owningPawn->GetController() && owningPawn->GetController()->IsLocalController())
+	{
+		scoreWidget->SetVisibility(true);
+		scoreWidget->SetComponentTickEnabled(true);
+	}
 
 	//3초 후에 완전히 파괴
 	FTimerHandle destroyTimer;
