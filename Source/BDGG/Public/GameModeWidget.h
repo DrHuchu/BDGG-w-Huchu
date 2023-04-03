@@ -72,7 +72,7 @@ public:
 	int startCountNum = 3;
 
 	UPROPERTY(EditDefaultsOnly)
-	int playTime = 120;
+	int playTime = 12;
 
 	FTimerHandle countDownTimerHandle;
 	FTimerHandle startCountHandle;
@@ -97,4 +97,7 @@ public:
 	UPROPERTY()
 	TArray <UTextBlock*> textblockRankScoreArray;
 	TArray <int> tempScoreArray;
+
+	FString myID;
+	FString winnerID;
 };

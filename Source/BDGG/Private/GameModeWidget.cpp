@@ -73,6 +73,10 @@ void UGameModeWidget::RefreshRanking()
 			textblockRankScoreArray[i]->SetText(FText::AsNumber(tempScoreArray[i] += scoreSpeed));
 		}
 	}
+	if (!nameScoreArr.IsEmpty())
+	{
+		winnerID = nameScoreArr[0].name;
+	}
 }
 
 void UGameModeWidget::CountDownTimer(int TimeInSec)
@@ -137,10 +141,20 @@ void UGameModeWidget::UpdateMinAndSec()
 
 void UGameModeWidget::GameEnd()
 {
+	// ½ÂÀÚÃ³¸®
+	myID = GetOwningPlayerState()->GetPlayerName();
+	if (myID == winnerID)
+	{
+		TextBlock_StartCount->SetText(FText::FromString("Win!"));
+	}
+	else
+	{
+		TextBlock_StartCount->SetText(FText::FromString("Lose.."));
+	}
+
 	scoreSpeed = 50;
 	ResetScoreBeforeGameEnd();
 	PlayAnimation(Anim_EndScoreChart);
-	TextBlock_StartCount->SetText(FText::FromString("Win!"));
 	PlayAnimation(Anim_EndText);
 }
 

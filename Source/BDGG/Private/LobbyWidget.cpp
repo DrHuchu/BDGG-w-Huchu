@@ -37,7 +37,7 @@ void ULobbyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 void ULobbyWidget::LobbyGameStart()
 {
 	GetOwningPlayerState()->GetPlayerController()->SetShowMouseCursor(false);
-	GetWorld()->ServerTravel("/Game/Maps/HuchuMap_DesignTest?Listen", true);
+	GetWorld()->ServerTravel("/Game/Maps/HuchuMap_DesignTest?Listen");
 }
 
 void ULobbyWidget::RefreshLobbyName()
