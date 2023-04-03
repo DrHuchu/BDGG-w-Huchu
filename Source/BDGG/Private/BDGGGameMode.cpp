@@ -28,6 +28,6 @@ void ABDGGGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 
-	auto gi = Cast<UBDGGGameInstance>(GetGameInstance());
-	NewPlayer->PlayerState->SetPlayerName(gi->sessionID.ToString());
+	//auto gi = Cast<UBDGGGameInstance>(NewPlayer->GetGameInstance());
+	//NewPlayer->PlayerState->SetPlayerName(gi->sessionID.ToString());
 }
