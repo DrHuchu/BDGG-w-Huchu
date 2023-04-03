@@ -6,6 +6,7 @@
 #include "BDGGGameMode.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Components/PrimitiveComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Engine/EngineTypes.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
@@ -34,6 +35,9 @@ void ABrick_3rd::AddScore()
 
 		meshComp->SetHiddenInGame(true);
 		meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		scoreWidget->SetVisibility(true);
+		scoreWidget->SetComponentTickEnabled(true);
 
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), niagara, GetActorLocation(), GetActorRotation(), FVector(4.0f));
 

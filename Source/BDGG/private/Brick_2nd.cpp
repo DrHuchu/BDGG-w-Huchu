@@ -6,6 +6,7 @@
 #include "BDGGGameMode.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Components/PrimitiveComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Engine/EngineTypes.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
@@ -35,6 +36,9 @@ void ABrick_2nd::AddScore()
 
 		meshComp->SetHiddenInGame(true);
 		meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		scoreWidget->SetVisibility(true);
+		scoreWidget->SetComponentTickEnabled(true);
 
 		//3초 후에 완전히 파괴
 		FTimerHandle destroyTimer;
