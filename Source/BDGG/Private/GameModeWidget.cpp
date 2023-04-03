@@ -14,6 +14,7 @@
 void UGameModeWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
 	// 게임모드 캐스팅
 	gm = Cast<ABDGGGameMode>(GetWorld()->GetAuthGameMode());
 	// 게임 인스턴스 캐스팅
@@ -21,7 +22,7 @@ void UGameModeWidget::NativeConstruct()
 	if (gi)
 	{
 		//gi->GetFirstLocalPlayerController()->GetPawn()->GetPlayerState()->SetPlayerName(gi->sessionID.ToString());
-		GetOwningPlayerState()->SetPlayerName(gi->sessionID.ToString());
+		//GetOwningPlayerState()->SetPlayerName(gi->sessionID.ToString());
 	}
 	// 시작 카운트다운
 	StartWidgetPlay();
@@ -105,8 +106,8 @@ void UGameModeWidget::StartWidgetPlay()
 		else
 		{
 			TextBlock_StartCount->SetText(FText::FromString("Start!"));
-			GetWorld()->GetTimerManager().ClearTimer(startCountHandle);
 			CountDownTimer(playTime);
+			GetWorld()->GetTimerManager().ClearTimer(startCountHandle);
 		}
 		PlayAnimation(Anim_StartCount);
 		startCountNum--;
