@@ -90,7 +90,7 @@ void ABDGGPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void ABDGGPlayer::OnActionFirePressed()
 {
-	DoFire();
+	DoFireServer();
 }
 
 void ABDGGPlayer::OnActionFireReleased()
@@ -105,9 +105,20 @@ void ABDGGPlayer::DoFire()
 	//중에 찾아보기
 	//플레이어 1m 앞
 	FTransform t =gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
-	GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
+	ABullet* bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
+	bullet->SetOwner(this);
+	UE_LOG(LogTemp, Warning, TEXT("owner name is : %s"), *bullet->GetOwner()->GetName());
+}
 
-	 
+void ABDGGPlayer::DoFireMulticast_Implementation()
+{
+
+}
+
+void ABDGGPlayer::DoFireServer_Implementation()
+{
+	DoFire();
+	DoFireMulticast();
 }
 
  
