@@ -106,8 +106,11 @@ void ABDGGPlayer::DoFire()
 	//플레이어 1m 앞
 	FTransform t =gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
 	ABullet* bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
-	bullet->SetOwner(this);
-	UE_LOG(LogTemp, Warning, TEXT("owner name is : %s"), *bullet->GetOwner()->GetName());
+	if(bullet)
+	{
+		bullet->SetOwner(this);
+		UE_LOG(LogTemp, Warning, TEXT("owner name is : %s"), *bullet->GetOwner()->GetName());
+	}
 }
 
 void ABDGGPlayer::DoFireMulticast_Implementation()
