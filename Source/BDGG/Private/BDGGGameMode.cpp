@@ -15,7 +15,7 @@ ABDGGGameMode::ABDGGGameMode()
 	if (PlayerPawnBPClass.Class != NULL)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
-	}
+	}  
 }
 
 void ABDGGGameMode::BeginPlay()

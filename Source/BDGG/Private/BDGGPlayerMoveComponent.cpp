@@ -78,13 +78,13 @@ void UBDGGPlayerMoveComponent::OnAxisVertical(float value)
 void UBDGGPlayerMoveComponent::OnAxisLookUp(float value)
 {
 	
-	me->AddControllerPitchInput(value);
+	//me->AddControllerPitchInput(value);
 }
 
 void UBDGGPlayerMoveComponent::OnAxisTurnRight(float value)
 {
 	
-	me->AddControllerYawInput(value);
+	//me->AddControllerYawInput(value);
 }
 
 void UBDGGPlayerMoveComponent::OnActionJump()

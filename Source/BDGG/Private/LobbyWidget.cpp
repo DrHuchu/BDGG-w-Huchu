@@ -10,7 +10,6 @@
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
-#include "BDGGPlayerController.h"
 
 void ULobbyWidget::NativeConstruct()
 {
@@ -22,8 +21,11 @@ void ULobbyWidget::NativeConstruct()
 	btn_GameStart->OnClicked.AddDynamic(this, &ULobbyWidget::LobbyGameStart);
 
 	gi->GetFirstLocalPlayerController()->SetShowMouseCursor(true);
-	//GetOwningPlayerState()->SetPlayerName(gi->sessionID.ToString());
-	UGameplayStatics::SetGamePaused(GetWorld(), true);
+
+	if (!GetOwningPlayerPawn()->HasAuthority())
+	{
+		btn_GameStart->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void ULobbyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -34,11 +36,8 @@ void ULobbyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void ULobbyWidget::LobbyGameStart()
 {
-	auto pc = Cast<ABDGGPlayerController>(GetOwningPlayerState()->GetPlayerController());
-	pc->gameModeWidgetUI->AddToViewport();
-	this->RemoveFromParent();
-	UGameplayStatics::SetGamePaused(GetWorld(), false);
 	GetOwningPlayerState()->GetPlayerController()->SetShowMouseCursor(false);
+	GetWorld()->ServerTravel("/Game/Maps/HuchuMap_DesignTest?Listen");
 }
 
 void ULobbyWidget::RefreshLobbyName()
@@ -51,3 +50,4 @@ void ULobbyWidget::RefreshLobbyName()
 		lobbyNameArray[i]->SetText(FText::FromString(tempArray[i]->GetPlayerName()));
 	}
 }
+
