@@ -10,6 +10,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Components/WidgetComponent.h"
 
 
 // Sets default values
@@ -25,7 +26,11 @@ ABrickBase::ABrickBase()
 	meshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("meshComp"));
 	meshComp->SetupAttachment(boxComp);
 	meshComp->SetRelativeScale3D(FVector(0.25f));
-	
+
+	scoreWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("scoreWidget"));
+	scoreWidget->SetupAttachment(meshComp);
+	scoreWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	scoreWidget->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned
@@ -34,6 +39,7 @@ void ABrickBase::BeginPlay()
 	Super::BeginPlay();
 
 	gm = Cast<ABDGGGameMode>(GetWorld()->GetAuthGameMode());
+	scoreWidget->SetComponentTickEnabled(false);
 }
 
 // Called every frame
@@ -50,7 +56,6 @@ void ABrickBase::OnBlockHit()
 
 void ABrickBase::AddScore()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Score ++*3"));
 	if (gm)
 	{
 		//점수 득점
@@ -62,6 +67,9 @@ void ABrickBase::AddScore()
 
 	meshComp->SetHiddenInGame(true);
 	meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	scoreWidget->SetVisibility(true);
+	scoreWidget->SetComponentTickEnabled(true);
 
 	//3초 후에 완전히 파괴
 	FTimerHandle destroyTimer;

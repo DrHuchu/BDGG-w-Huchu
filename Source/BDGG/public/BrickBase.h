@@ -39,6 +39,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Brick")
 	TSubclassOf<class AFieldSystemActor> masterField;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Brick")
+	class UWidgetComponent* scoreWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Brick")
+	TSubclassOf<class UUserWidget> scoreFactory;
+
 	UFUNCTION()
 	void OnBlockHit();
 
