@@ -13,7 +13,7 @@ UCLASS()
 class BDGG_API ABrick_1st : public ABrickBase
 {
 	GENERATED_BODY()
-	virtual void AddScore() override;
+	virtual void AddScore_Implementation() override;
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Brick")

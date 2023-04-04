@@ -48,7 +48,7 @@ public:
 	UFUNCTION()
 	void OnBlockHit();
 
-	UFUNCTION()
+	UFUNCTION(Server, Unreliable)
 	virtual void AddScore();
 
 	class ABDGGGameMode* gm;
