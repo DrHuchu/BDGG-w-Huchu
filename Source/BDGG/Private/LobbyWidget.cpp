@@ -3,6 +3,8 @@
 
 #include "LobbyWidget.h"
 
+#include <string>
+
 #include "BDGGGameInstance.h"
 #include "GameModeWidget.h"
 #include "Components/Button.h"
@@ -17,6 +19,7 @@ void ULobbyWidget::NativeConstruct()
 	gi = Cast<UBDGGGameInstance>(GetGameInstance());
 
 	lobbyNameArray = { text_LobbyName1, text_LobbyName2, text_LobbyName3, text_LobbyName4 };
+	lobbyPingArray = { text_LobbyPing1, text_LobbyPing2, text_LobbyPing3, text_LobbyPing4 };
 
 	btn_GameStart->OnClicked.AddDynamic(this, &ULobbyWidget::LobbyGameStart);
 
@@ -64,6 +67,15 @@ void ULobbyWidget::RefreshLobbyName()
 	{
 		lobbyNameArray[i]->SetVisibility(ESlateVisibility::Visible);
 		lobbyNameArray[i]->SetText(FText::FromString(lobbyPlayerInfoArr[i].name));
+		lobbyPingArray[i]->SetVisibility(ESlateVisibility::Visible);
+		if(i == 0)
+		{
+			lobbyPingArray[0]->SetText(FText::FromString("Server"));
+		}
+		else
+		{
+			lobbyPingArray[i]->SetText(FText::FromString((FString::FromInt(lobbyPlayerInfoArr[i].ping) + ("ms"))));
+		}
 	}
 }
 

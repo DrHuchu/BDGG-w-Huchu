@@ -14,7 +14,7 @@ struct FLobbyPlayerInfo
 	UPROPERTY()
 	float startTime;
 	UPROPERTY()
-	float ping;
+	int ping;
 	UPROPERTY()
 	FString name;
 };
@@ -41,9 +41,21 @@ public:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UTextBlock* text_LobbyName4;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* text_LobbyPing1;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* text_LobbyPing2;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* text_LobbyPing3;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* text_LobbyPing4;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UButton* btn_GameStart;
+
 	UPROPERTY()
 	TArray<UTextBlock*> lobbyNameArray;
+	UPROPERTY()
+	TArray<UTextBlock*> lobbyPingArray;
 
 	UFUNCTION()
 	void LobbyGameStart();
