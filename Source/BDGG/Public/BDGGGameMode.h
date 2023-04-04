@@ -16,6 +16,8 @@ public:
 	ABDGGGameMode();
 	virtual void BeginPlay() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
+
+	virtual AActor* ChoosePlayerStart_Implementation(AController* player) override;
 };
 
 

@@ -3,10 +3,10 @@
 #include "BDGGGameMode.h"
 #include "BDGGCharacter.h"
 #include "UObject/ConstructorHelpers.h"
-#include "Components/TextBlock.h"
 #include "GameModeWidget.h"
-#include "BDGGGameInstance.h"
+#include "GameFramework/PlayerStart.h"
 #include "GameFramework/PlayerState.h"
+#include "EngineUtils.h"
 
 ABDGGGameMode::ABDGGGameMode()
 {
@@ -31,3 +31,21 @@ void ABDGGGameMode::PostLogin(APlayerController* NewPlayer)
 	//auto gi = Cast<UBDGGGameInstance>(NewPlayer->GetGameInstance());
 	//NewPlayer->PlayerState->SetPlayerName(gi->sessionID.ToString());
 }
+
+AActor* ABDGGGameMode::ChoosePlayerStart_Implementation(AController* player)
+{
+	return Super::ChoosePlayerStart_Implementation(player);
+
+	for (TActorIterator<APlayerStart> iter(GetWorld()); iter; ++iter)
+	{
+		APlayerStart* ps = *iter;
+		if (ps->PlayerStartTag != FName("Spawned"))
+		{
+			ps->PlayerStartTag = FName("Spawned");
+			return ps;
+		}
+	}
+	return nullptr;
+}
+
+
