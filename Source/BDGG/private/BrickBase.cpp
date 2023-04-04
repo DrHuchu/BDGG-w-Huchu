@@ -55,15 +55,15 @@ void ABrickBase::OnBlockHit()
 	AddScore();
 }
 
-void ABrickBase::AddScore()
+void ABrickBase::AddScore_Implementation()
 {
 	auto owningPawn = Cast<APawn>(GetOwner());
 
-	if (gm)
+	auto ps = Cast<ABDGGPlayerState>(owningPawn->GetPlayerState());
+	if (ps)
 	{
-		//점수 득점
-		UGameplayStatics::GetPlayerState(this, 0)->SetScore(UGameplayStatics::GetPlayerState(this, 0)->GetScore() + brickScore);
-		UE_LOG(LogTemp, Warning, TEXT("%f"), UGameplayStatics::GetPlayerState(this, 0)->GetScore());
+		ps->SetScore(ps->GetScore() + brickScore);
+		UE_LOG(LogTemp, Warning, TEXT("%f"), ps->GetScore());
 	}
 
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), niagara, GetActorLocation(), GetActorRotation());
@@ -71,7 +71,7 @@ void ABrickBase::AddScore()
 	meshComp->SetHiddenInGame(true);
 	meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	if(owningPawn->GetController() && owningPawn->GetController()->IsLocalController())
+	if (owningPawn && owningPawn->GetController() && owningPawn->GetController()->IsLocalController())
 	{
 		scoreWidget->SetVisibility(true);
 		scoreWidget->SetComponentTickEnabled(true);
@@ -84,3 +84,39 @@ void ABrickBase::AddScore()
 			Destroy();
 		}), 2.0f, false);
 }
+
+//void ABrickBase::AddScore()
+//{
+//	auto owningPawn = Cast<APawn>(GetOwner());
+//
+//	auto ps = Cast<ABDGGPlayerState>(owningPawn->GetPlayerState());
+//	if(ps)
+//	{
+//		ps->SetScore(ps->GetScore() + brickScore);
+//	}
+//
+//	//if (gm)
+//	//{
+//	//	//점수 득점
+//	//	UGameplayStatics::GetPlayerState(this, 0)->SetScore(UGameplayStatics::GetPlayerState(this, 0)->GetScore() + brickScore);
+//	//	UE_LOG(LogTemp, Warning, TEXT("%f"), UGameplayStatics::GetPlayerState(this, 0)->GetScore());
+//	//}
+//
+//	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), niagara, GetActorLocation(), GetActorRotation());
+//
+//	meshComp->SetHiddenInGame(true);
+//	meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+//
+//	if(owningPawn && owningPawn->GetController() && owningPawn->GetController()->IsLocalController())
+//	{
+//		scoreWidget->SetVisibility(true);
+//		scoreWidget->SetComponentTickEnabled(true);
+//	}
+//
+//	//3초 후에 완전히 파괴
+//	FTimerHandle destroyTimer;
+//	GetWorldTimerManager().SetTimer(destroyTimer, FTimerDelegate::CreateLambda([&]()
+//		{
+//			Destroy();
+//		}), 2.0f, false);
+//}

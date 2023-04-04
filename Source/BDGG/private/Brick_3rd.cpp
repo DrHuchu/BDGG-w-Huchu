@@ -4,6 +4,7 @@
 #include "Brick_3rd.h"
 
 #include "BDGGGameMode.h"
+#include "BDGGPlayerState.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/WidgetComponent.h"
@@ -11,7 +12,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 
-void ABrick_3rd::AddScore()
+void ABrick_3rd::AddScore_Implementation()
 {
 	//Super::AddScore();
 
@@ -25,19 +26,18 @@ void ABrick_3rd::AddScore()
 	if (brickHP == 0)
 	{
 		auto owningPawn = Cast<APawn>(GetOwner());
-		
-		if (gm)
-		{
-			//Á¡¼ö µæÁ¡
-			UGameplayStatics::GetPlayerState(this, 0)->SetScore(UGameplayStatics::GetPlayerState(this, 0)->GetScore() + brickScore3);
-			UE_LOG(LogTemp, Warning, TEXT("%f"), UGameplayStatics::GetPlayerState(this, 0)->GetScore());
-		}
 
+
+		auto ps = Cast<ABDGGPlayerState>(owningPawn->GetPlayerState());
+		if(ps)
+		{
+			ps->SetScore(ps->GetScore() + brickScore);
+		}
 
 		meshComp->SetHiddenInGame(true);
 		meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-		if (owningPawn->GetController() && owningPawn->GetController()->IsLocalController())
+		if (owningPawn && owningPawn->GetController() && owningPawn->GetController()->IsLocalController())
 		{
 			scoreWidget->SetVisibility(true);
 			scoreWidget->SetComponentTickEnabled(true);
