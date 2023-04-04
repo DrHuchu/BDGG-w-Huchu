@@ -24,7 +24,8 @@ void ABrick_3rd::AddScore()
 
 	if (brickHP == 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Score ++*3"));
+		auto owningPawn = Cast<APawn>(GetOwner());
+		
 		if (gm)
 		{
 			//Á¡¼ö µæÁ¡
@@ -36,8 +37,11 @@ void ABrick_3rd::AddScore()
 		meshComp->SetHiddenInGame(true);
 		meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-		scoreWidget->SetVisibility(true);
-		scoreWidget->SetComponentTickEnabled(true);
+		if (owningPawn->GetController() && owningPawn->GetController()->IsLocalController())
+		{
+			scoreWidget->SetVisibility(true);
+			scoreWidget->SetComponentTickEnabled(true);
+		}
 
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), niagara, GetActorLocation(), GetActorRotation(), FVector(4.0f));
 

@@ -53,6 +53,7 @@ void ABullet::BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 	//블럭을 파괴하고
 	brick->hitOrigin = GetActorLocation();
 	brick->hitDirection = brick->GetActorLocation() - GetActorLocation();
+	brick->SetOwner(GetOwner());
 	brick->OnBlockHit();
 	//자기 자신도 파괴한다.
 	Destroy();
