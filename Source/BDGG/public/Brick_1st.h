@@ -30,4 +30,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Brick")
 	float power = 30;
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void ChangeColor();
 };
