@@ -7,6 +7,7 @@
 #include <GameFramework/CharacterMovementComponent.h>
 #include "BDGGPlayerMoveComponent.h"
 #include "Bullet.h"
+#include "BDGGPlayer_AnimInstance.h"
 
 // Sets default values
 ABDGGPlayer::ABDGGPlayer()
@@ -52,7 +53,7 @@ ABDGGPlayer::ABDGGPlayer()
 	if (tempGunMesh.Succeeded())
 	{
 		gunMeshComp->SetSkeletalMesh(tempGunMesh.Object);
-		gunMeshComp->SetRelativeLocation(FVector(0, 50, 110));
+		gunMeshComp->SetRelativeLocationAndRotation(FVector(-9, -2, -6), FRotator(0, 100, -20));
 	} 
 
 	// 이동컴포넌트와 총쏘기컴포넌트를 생성하고싶다.
@@ -90,7 +91,9 @@ void ABDGGPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void ABDGGPlayer::OnActionFirePressed()
 {
-	DoFire();
+	//총쏘는 애니메이션을 사용하고싶다
+	auto anim = Cast<UBDGGPlayer_AnimInstance>(GetMesh()->GetAnimInstance());
+	anim->OnFire();
 }
 
 void ABDGGPlayer::OnActionFireReleased()
@@ -104,10 +107,9 @@ void ABDGGPlayer::DoFire()
 	//이런거 찾을 때 APlayer Getworld UKismetMathLibrary, UGameplayStatics
 	//중에 찾아보기
 	//플레이어 1m 앞
-	FTransform t =gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
+	FTransform t = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
 	GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
 
 	 
 }
 
- 

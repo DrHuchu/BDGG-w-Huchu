@@ -55,3 +55,9 @@ void UBDGGPlayer_AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	//UE_LOG(LogTemp, Warning, TEXT("movespeed is %f"), moveSpeed);
 	//UE_LOG(LogTemp, Warning, TEXT("pitch is %f"), pitch);
 }
+
+
+void UBDGGPlayer_AnimInstance::OnFire()
+{
+	Montage_Play(fireMontageFactory);
+}

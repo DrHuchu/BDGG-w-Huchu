@@ -33,6 +33,10 @@ public:
 		
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = AnimSettings)
 	float pitch = 0;
-		
 	
+	UPROPERTY(EditAnywhere)
+	class UAnimMontage* fireMontageFactory;
+
+	UFUNCTION(BlueprintCallable)
+	void OnFire();
 };

@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "BDGGGameMode.h"
-#include "BDGGCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/TextBlock.h"
 #include "GameModeWidget.h"
