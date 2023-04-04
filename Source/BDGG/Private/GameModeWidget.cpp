@@ -5,6 +5,7 @@
 
 #include "BDGGGameInstance.h"
 #include "BDGGGameMode.h"
+#include "BDGGPlayerState.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "GameFramework/GameStateBase.h"
@@ -17,13 +18,7 @@ void UGameModeWidget::NativeConstruct()
 
 	// 게임모드 캐스팅
 	gm = Cast<ABDGGGameMode>(GetWorld()->GetAuthGameMode());
-	// 게임 인스턴스 캐스팅
-	UBDGGGameInstance* gi = Cast<UBDGGGameInstance>(GetGameInstance());
-	if (gi)
-	{
-		//gi->GetFirstLocalPlayerController()->GetPawn()->GetPlayerState()->SetPlayerName(gi->sessionID.ToString());
-		//GetOwningPlayerState()->SetPlayerName(gi->sessionID.ToString());
-	}
+
 	// 시작 카운트다운
 	StartWidgetPlay();
 
@@ -67,6 +62,9 @@ void UGameModeWidget::RefreshRanking()
 	// 정렬된 순서대로 랭킹표에 출력
 	for(int i = 0; i < arraySize; i++)
 	{
+		textblockRankIdArray[i]->SetVisibility(ESlateVisibility::Visible);
+		textblockRankScoreArray[i]->SetVisibility(ESlateVisibility::Visible);
+
 		textblockRankIdArray[i]->SetText(FText::FromString(nameScoreArr[i].name));
 		if (tempScoreArray[i] < nameScoreArr[i].score)
 		{
@@ -142,7 +140,12 @@ void UGameModeWidget::UpdateMinAndSec()
 void UGameModeWidget::GameEnd()
 {
 	// 승자처리
-	myID = GetOwningPlayerState()->GetPlayerName();
+	auto ps = Cast<ABDGGPlayerState>(GetOwningPlayerState());
+	if (ps)
+	{
+		myID = ps->GetPlayerName();
+	}
+
 	if (myID == winnerID)
 	{
 		TextBlock_StartCount->SetText(FText::FromString("Win!"));

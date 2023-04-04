@@ -4,6 +4,7 @@
 #include "BrickBase.h"
 
 #include "BDGGGameMode.h"
+#include "BDGGPlayerState.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/PrimitiveComponent.h"

@@ -3,12 +3,4 @@
 
 #include "BDGGPlayerState.h"
 
-void ABDGGPlayerState::BeginPlay()
-{
-	
-}
 
-void ABDGGPlayerState::Tick(float DeltaSeconds)
-{
-
-}

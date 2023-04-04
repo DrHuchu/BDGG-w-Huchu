@@ -13,7 +13,5 @@ UCLASS()
 class BDGG_API ABDGGPlayerState : public APlayerState
 {
 	GENERATED_BODY()
-public:
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
+
 };

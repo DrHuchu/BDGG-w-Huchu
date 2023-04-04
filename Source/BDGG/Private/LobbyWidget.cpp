@@ -44,10 +44,26 @@ void ULobbyWidget::RefreshLobbyName()
 {
 	auto tempArray = UGameplayStatics::GetGameState(GetWorld())->PlayerArray;
 	int arraySize = tempArray.Num();
+
+	TArray<FLobbyPlayerInfo> lobbyPlayerInfoArr;
+	lobbyPlayerInfoArr.Init(tempStruct ,arraySize);
+	for (int i = 0; i < arraySize; i++)
+	{
+		lobbyPlayerInfoArr[i].name = tempArray[i]->GetPlayerName();
+		lobbyPlayerInfoArr[i].startTime = tempArray[i]->GetStartTime();
+		lobbyPlayerInfoArr[i].ping = tempArray[i]->GetPingInMilliseconds();
+	}
+
+	// tempArray를 startTime으로 정렬하여 서버가 누군지 찾는다
+	lobbyPlayerInfoArr.Sort([](const FLobbyPlayerInfo& A, const FLobbyPlayerInfo& B)
+		{
+			return A.startTime < B.startTime;
+		});
+
 	for(int i = 0; i < arraySize; i++)
 	{
 		lobbyNameArray[i]->SetVisibility(ESlateVisibility::Visible);
-		lobbyNameArray[i]->SetText(FText::FromString(tempArray[i]->GetPlayerName()));
+		lobbyNameArray[i]->SetText(FText::FromString(lobbyPlayerInfoArr[i].name));
 	}
 }
 
