@@ -4,6 +4,7 @@
 #include "Brick_2nd.h"
 
 #include "BDGGGameMode.h"
+#include "BDGGPlayerState.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/WidgetComponent.h"
@@ -11,7 +12,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 
-void ABrick_2nd::AddScore()
+void ABrick_2nd::AddScore_Implementation()
 {
 	//Super::AddScore();
 
@@ -25,12 +26,11 @@ void ABrick_2nd::AddScore()
 	if (brickHP == 0)
 	{
 		auto owningPawn = Cast<APawn>(GetOwner());
-		
-		if (gm)
+
+		auto ps = Cast<ABDGGPlayerState>(owningPawn->GetPlayerState());
+		if(ps)
 		{
-			//Á¡¼ö µæÁ¡
-			UGameplayStatics::GetPlayerState(this, 0)->SetScore(UGameplayStatics::GetPlayerState(this, 0)->GetScore() + brickScore2);
-			UE_LOG(LogTemp, Warning, TEXT("%f"), UGameplayStatics::GetPlayerState(this, 0)->GetScore());
+			ps->SetScore(ps->GetScore() + brickScore);
 		}
 
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), niagara, GetActorLocation(), GetActorRotation());
@@ -38,7 +38,7 @@ void ABrick_2nd::AddScore()
 		meshComp->SetHiddenInGame(true);
 		meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-		if (owningPawn->GetController() && owningPawn->GetController()->IsLocalController())
+		if (owningPawn && owningPawn->GetController() && owningPawn->GetController()->IsLocalController())
 		{
 			scoreWidget->SetVisibility(true);
 			scoreWidget->SetComponentTickEnabled(true);
