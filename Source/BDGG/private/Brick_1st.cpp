@@ -16,41 +16,34 @@ void ABrick_1st::AddScore_Implementation()
 {
 	//Super::AddScore();
 	
-	brickHP--;
-	mixValue += 1.0f / (brickMaxHP -1);
-	power -= 30.0f / brickMaxHP;
-
-	meshComp->SetScalarParameterValueOnMaterials(FName("MixValue"), mixValue);
-	meshComp->SetScalarParameterValueOnMaterials(FName("power"), power);
+	ChangeColor();
 
 	if(brickHP == 0)
 	{
 		auto owningPawn = Cast<APawn>(GetOwner());
 
+		if (owningPawn == nullptr)
+		{
+			return;
+		}
+
 		auto ps = Cast<ABDGGPlayerState>(owningPawn->GetPlayerState());
 		if(ps)
 		{
-			ps->SetScore(ps->GetScore() + brickScore);
+			ps->SetScore(ps->GetScore() + brickScore1);
 		}
 
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), niagara, GetActorLocation(), GetActorRotation());
-
-		meshComp->SetHiddenInGame(true);
-		meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-
-		if (owningPawn && owningPawn->GetController() && owningPawn->GetController()->IsLocalController())
-		{
-			scoreWidget->SetVisibility(true);
-			scoreWidget->SetComponentTickEnabled(true);
-		}
-		
-		//3초 후에 완전히 파괴
-		FTimerHandle destroyTimer;
-		GetWorldTimerManager().SetTimer(destroyTimer, FTimerDelegate::CreateLambda([&]()
-			{
-				//UE_LOG(LogTemp, Warning, TEXT("Destroy"));
-				Destroy();
-			}), 2.0f, false);
+		//나이아가라 스폰, 블럭 안보이게 처리
+		SpawnFX();
 	}
+}
+
+void ABrick_1st::ChangeColor_Implementation()
+{
+	brickHP--;
+	mixValue += 1.0f / (brickMaxHP - 1);
+	power -= 30.0f / brickMaxHP;
+
+	meshComp->SetScalarParameterValueOnMaterials(FName("MixValue"), mixValue);
+	meshComp->SetScalarParameterValueOnMaterials(FName("power"), power);
 }

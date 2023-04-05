@@ -51,6 +51,9 @@ public:
 	UFUNCTION(Server, Unreliable)
 	virtual void AddScore();
 
+	UFUNCTION(NetMulticast, Unreliable)
+	virtual void SpawnFX();
+
 	class ABDGGGameMode* gm;
 
 	UPROPERTY(VisibleAnywhere, Category = "Brick")

@@ -54,4 +54,6 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void DoFireMulticast();
 
+	UPROPERTY(EditAnywhere)
+	class USoundBase* fireSound;
 };
