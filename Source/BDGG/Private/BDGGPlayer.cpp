@@ -7,6 +7,7 @@
 #include <GameFramework/CharacterMovementComponent.h>
 #include "BDGGPlayerMoveComponent.h"
 #include "Bullet.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABDGGPlayer::ABDGGPlayer()
@@ -110,12 +111,13 @@ void ABDGGPlayer::DoFire()
 	{
 		bullet->SetOwner(this);
 		UE_LOG(LogTemp, Warning, TEXT("owner name is : %s"), *bullet->GetOwner()->GetName());
+
 	}
 }
 
 void ABDGGPlayer::DoFireMulticast_Implementation()
 {
-
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), fireSound, GetActorLocation(), GetActorRotation());
 }
 
 void ABDGGPlayer::DoFireServer_Implementation()
