@@ -91,7 +91,8 @@ void ABDGGPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void ABDGGPlayer::OnActionFirePressed()
 {
-	//총쏘는 애니메이션을 사용하고싶다
+	DoFire();
+		//총쏘는 애니메이션을 사용하고싶다
 	auto anim = Cast<UBDGGPlayer_AnimInstance>(GetMesh()->GetAnimInstance());
 	anim->OnFire();
 }
@@ -107,9 +108,8 @@ void ABDGGPlayer::DoFire()
 	//이런거 찾을 때 APlayer Getworld UKismetMathLibrary, UGameplayStatics
 	//중에 찾아보기
 	//플레이어 1m 앞
+	UE_LOG(LogTemp, Warning, TEXT("shooting"));
 	FTransform t = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
 	GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
-
-	 
 }
 

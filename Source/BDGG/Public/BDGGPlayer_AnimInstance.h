@@ -31,7 +31,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = AnimSettings)
 	bool bIsJumping = false;
 		
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = AnimSettings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimSettings)
 	float pitch = 0;
 	
 	UPROPERTY(EditAnywhere)
