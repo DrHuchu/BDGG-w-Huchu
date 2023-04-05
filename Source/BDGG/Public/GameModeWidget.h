@@ -6,17 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "GameModeWidget.generated.h"
 
-USTRUCT(BlueprintType)
-struct FPlayerInfo
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadOnly)
-	FString name;
-	UPROPERTY(BlueprintReadOnly)
-	float score;
-};
-
 UCLASS()
 class BDGG_API UGameModeWidget : public UUserWidget
 {
@@ -91,7 +80,6 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	int scoreSpeed = 10;
 
-	FPlayerInfo tempStruct;
 	UPROPERTY()
 	TArray <UTextBlock*> textblockRankIdArray;
 	UPROPERTY()

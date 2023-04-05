@@ -3,14 +3,12 @@
 
 #include "GameModeWidget.h"
 
-#include "BDGGGameInstance.h"
 #include "BDGGGameMode.h"
 #include "BDGGPlayerState.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
-#include "Kismet/GameplayStatics.h"
 
 void UGameModeWidget::NativeConstruct()
 {
@@ -22,9 +20,6 @@ void UGameModeWidget::NativeConstruct()
 	// 시작 카운트다운
 	StartWidgetPlay();
 
-	// 초기화에 쓰일 빈 구조체
-	tempStruct.name = {};
-	tempStruct.score = 0;
 	// 랭킹표 구성요소들을 담은 배열
 	textblockRankIdArray = { TextBlock_RankID1, TextBlock_RankID2, TextBlock_RankID3, TextBlock_RankID4 };
 	textblockRankScoreArray = { TextBlock_RankScore1, TextBlock_RankScore2, TextBlock_RankScore3, TextBlock_RankScore4 };
@@ -34,7 +29,7 @@ void UGameModeWidget::NativeConstruct()
 void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	// 틱마다 랭킹 갱신
+
 	RefreshRanking();
 }
 
@@ -42,38 +37,27 @@ void UGameModeWidget::RefreshRanking()
 {
 	// playerstate array 가져오기
 	auto playerStateArray = GetWorld()->GetGameState()->PlayerArray;
-	// arraysize 가져오기
-	int arraySize = playerStateArray.Num();
-	// 정보 담을 구조체 배열 만들기
-	TArray<FPlayerInfo> nameScoreArr;
-	// 배열 초기화
-	nameScoreArr.Init(tempStruct, arraySize);
-	// 구조체에 각각 이름과 점수 채워주기
-	for(int i = 0; i < arraySize; i++)
-	{
-		nameScoreArr[i].name = playerStateArray[i]->GetPlayerName();
-		nameScoreArr[i].score = playerStateArray[i]->GetScore();
-	}
-	// 구조체 배열을 점수에 따라 정렬
-	nameScoreArr.Sort([](const FPlayerInfo& A, const FPlayerInfo& B)
+
+	playerStateArray.Sort([](const APlayerState& A, const APlayerState& B)
 		{
-			return A.score > B.score;
+			return A.GetScore() > B.GetScore();
 		});
+
 	// 정렬된 순서대로 랭킹표에 출력
-	for(int i = 0; i < arraySize; i++)
+	for(int i = 0; i < playerStateArray.Num(); i++)
 	{
 		textblockRankIdArray[i]->SetVisibility(ESlateVisibility::Visible);
-		textblockRankScoreArray[i]->SetVisibility(ESlateVisibility::Visible);
+		textblockRankIdArray[i]->SetText(FText::FromString(playerStateArray[i]->GetPlayerName()));
 
-		textblockRankIdArray[i]->SetText(FText::FromString(nameScoreArr[i].name));
-		if (tempScoreArray[i] < nameScoreArr[i].score)
+		textblockRankScoreArray[i]->SetVisibility(ESlateVisibility::Visible);
+		if (tempScoreArray[i] < playerStateArray[i]->GetScore())
 		{
 			textblockRankScoreArray[i]->SetText(FText::AsNumber(tempScoreArray[i] += scoreSpeed));
 		}
 	}
-	if (!nameScoreArr.IsEmpty())
+	if (!playerStateArray.IsEmpty())
 	{
-		winnerID = nameScoreArr[0].name;
+		winnerID = playerStateArray[0]->GetPlayerName();
 	}
 }
 

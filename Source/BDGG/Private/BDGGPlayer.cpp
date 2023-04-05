@@ -106,6 +106,7 @@ void ABDGGPlayer::DoFire()
 	//플레이어 1m 앞
 	FTransform t =gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
 	ABullet* bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
+
 	if(bullet)
 	{
 		bullet->SetOwner(this);

@@ -6,20 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "LobbyWidget.generated.h"
 
-USTRUCT()
-struct FLobbyPlayerInfo
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	float startTime;
-	UPROPERTY()
-	int ping;
-	UPROPERTY()
-	FString name;
-};
-
-
 UCLASS()
 class BDGG_API ULobbyWidget : public UUserWidget
 {
@@ -61,5 +47,4 @@ public:
 	void LobbyGameStart();
 	UFUNCTION()
 	void RefreshLobbyName();
-	FLobbyPlayerInfo tempStruct;
 };
