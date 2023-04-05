@@ -34,7 +34,6 @@ public:
 	class UTextBlock* text_LobbyPing3;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UTextBlock* text_LobbyPing4;
-
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UButton* btn_GameStart;
 
@@ -47,4 +46,6 @@ public:
 	void LobbyGameStart();
 	UFUNCTION()
 	void RefreshLobbyName();
+
+	int tempTotalPlayerNum;
 };

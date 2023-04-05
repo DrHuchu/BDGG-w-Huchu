@@ -16,7 +16,9 @@ public:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	UPROPERTY()
-	class ABDGGGameMode* gm;
+	class ABDGGPlayerController* pc;
+	UPROPERTY()
+	class ABDGGGameState* gs;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UTextBlock* TextBlock_Min;
@@ -77,6 +79,8 @@ public:
 	int tempScore3;
 	int tempScore4;
 
+	bool bDoOnce;
+
 	UPROPERTY(EditDefaultsOnly)
 	int scoreSpeed = 10;
 
@@ -88,4 +92,14 @@ public:
 
 	FString myID;
 	FString winnerID;
+
+	UFUNCTION(Server, Unreliable)
+	void AllPlayerDontMoveServer();
+	UFUNCTION(NetMulticast, Unreliable)
+	void AllPlayerDontMoveMulti();
+	UFUNCTION(Server, Unreliable)
+	void AllPlayerCanMoveServer();
+	UFUNCTION(NetMulticast, Unreliable)
+	void AllPlayerCanMoveMulti();
+
 };

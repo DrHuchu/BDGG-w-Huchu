@@ -39,6 +39,8 @@ void ULobbyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void ULobbyWidget::LobbyGameStart()
 {
+	gi->totalPlayerNum = tempTotalPlayerNum;
+
 	GetOwningPlayerState()->GetPlayerController()->SetShowMouseCursor(false);
 	GetWorld()->ServerTravel("/Game/Maps/HuchuMap_DesignTest?Listen");
 }
@@ -65,6 +67,11 @@ void ULobbyWidget::RefreshLobbyName()
 		{
 			lobbyPingArray[i]->SetText(FText::FromString((FString::FromInt(tempArray[i]->GetPingInMilliseconds()) + ("ms"))));
 		}
+	}
+
+	if (tempTotalPlayerNum < tempArray.Num())
+	{
+		tempTotalPlayerNum = tempArray.Num();
 	}
 }
 
