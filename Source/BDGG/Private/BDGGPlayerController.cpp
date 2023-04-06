@@ -2,8 +2,12 @@
 
 
 #include "BDGGPlayerController.h"
+
+#include "BDGGGameInstance.h"
+#include "BDGGPlayerState.h"
 #include "LobbyWidget.h"
 #include "GameModeWidget.h"
+#include "GameFramework/PlayerState.h"
 
 ABDGGPlayerController::ABDGGPlayerController()
 {
@@ -24,11 +28,20 @@ ABDGGPlayerController::ABDGGPlayerController()
 
 void ABDGGPlayerController::BeginPlay()
 {
-	
+	gi = Cast<UBDGGGameInstance>(GetGameInstance());
+	if (gi)
+	{
+		ServerSetName(gi->sessionID.ToString());
+	}
 }
 
 void ABDGGPlayerController::Tick(float DeltaSeconds)
 {
 	
+}
+
+void ABDGGPlayerController::ServerSetName_Implementation(const FString& name)
+{
+	GetPlayerState<ABDGGPlayerState>()->SetPlayerName(name);
 }
 

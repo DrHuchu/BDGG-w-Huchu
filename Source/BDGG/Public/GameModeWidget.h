@@ -6,17 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "GameModeWidget.generated.h"
 
-USTRUCT(BlueprintType)
-struct FPlayerInfo
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadOnly)
-	FString name;
-	UPROPERTY(BlueprintReadOnly)
-	float score;
-};
-
 UCLASS()
 class BDGG_API UGameModeWidget : public UUserWidget
 {
@@ -27,7 +16,9 @@ public:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	UPROPERTY()
-	class ABDGGGameMode* gm;
+	class ABDGGPlayerController* pc;
+	UPROPERTY()
+	class ABDGGGameState* gs;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UTextBlock* TextBlock_Min;
@@ -72,7 +63,7 @@ public:
 	int startCountNum = 3;
 
 	UPROPERTY(EditDefaultsOnly)
-	int playTime = 120;
+	int playTime = 12;
 
 	FTimerHandle countDownTimerHandle;
 	FTimerHandle startCountHandle;
@@ -88,13 +79,27 @@ public:
 	int tempScore3;
 	int tempScore4;
 
+	bool bDoOnce;
+
 	UPROPERTY(EditDefaultsOnly)
 	int scoreSpeed = 10;
 
-	FPlayerInfo tempStruct;
 	UPROPERTY()
 	TArray <UTextBlock*> textblockRankIdArray;
 	UPROPERTY()
 	TArray <UTextBlock*> textblockRankScoreArray;
 	TArray <int> tempScoreArray;
+
+	FString myID;
+	FString winnerID;
+
+	UFUNCTION(Server, Unreliable)
+	void AllPlayerDontMoveServer();
+	UFUNCTION(NetMulticast, Unreliable)
+	void AllPlayerDontMoveMulti();
+	UFUNCTION(Server, Unreliable)
+	void AllPlayerCanMoveServer();
+	UFUNCTION(NetMulticast, Unreliable)
+	void AllPlayerCanMoveMulti();
+
 };

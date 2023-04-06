@@ -7,6 +7,7 @@
 #include <GameFramework/CharacterMovementComponent.h>
 #include "BDGGPlayerMoveComponent.h"
 #include "Bullet.h"
+#include "Kismet/GameplayStatics.h"
 #include "BDGGPlayer_AnimInstance.h"
 
 // Sets default values
@@ -91,8 +92,9 @@ void ABDGGPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void ABDGGPlayer::OnActionFirePressed()
 {
-	DoFire();
-		//총쏘는 애니메이션을 사용하고싶다
+	DoFireServer();
+
+	//총쏘는 애니메이션을 사용하고싶다
 	auto anim = Cast<UBDGGPlayer_AnimInstance>(GetMesh()->GetAnimInstance());
 	anim->OnFire();
 }
@@ -108,8 +110,26 @@ void ABDGGPlayer::DoFire()
 	//이런거 찾을 때 APlayer Getworld UKismetMathLibrary, UGameplayStatics
 	//중에 찾아보기
 	//플레이어 1m 앞
-	UE_LOG(LogTemp, Warning, TEXT("shooting"));
-	FTransform t = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
-	GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
+
+	FTransform t =gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
+	ABullet* bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
+
+	if(bullet)
+	{
+		bullet->SetOwner(this);
+		UE_LOG(LogTemp, Warning, TEXT("owner name is : %s"), *bullet->GetOwner()->GetName());
+
+	}
+}
+
+void ABDGGPlayer::DoFireMulticast_Implementation()
+{
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), fireSound, GetActorLocation(), GetActorRotation());
+}
+
+void ABDGGPlayer::DoFireServer_Implementation()
+{
+	DoFire();
+	DoFireMulticast();
 }
 

@@ -31,4 +31,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	class ULobbyWidget* lobbyWidgetUI;
 
+	UPROPERTY()
+	class UBDGGGameInstance* gi;
+
+	UFUNCTION(Server, Unreliable)
+	void ServerSetName(const FString& name);
 };

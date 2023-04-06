@@ -3,74 +3,77 @@
 
 #include "GameModeWidget.h"
 
-#include "BDGGGameInstance.h"
-#include "BDGGGameMode.h"
+#include "BDGGPlayerController.h"
+#include "BDGGPlayerState.h"
+#include "BDGGGameState.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
-#include "Kismet/GameplayStatics.h"
 
 void UGameModeWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	// 게임모드 캐스팅
-	gm = Cast<ABDGGGameMode>(GetWorld()->GetAuthGameMode());
-	// 게임 인스턴스 캐스팅
-	UBDGGGameInstance* gi = Cast<UBDGGGameInstance>(GetGameInstance());
-	if (gi)
-	{
-		//gi->GetFirstLocalPlayerController()->GetPawn()->GetPlayerState()->SetPlayerName(gi->sessionID.ToString());
-		GetOwningPlayerState()->SetPlayerName(gi->sessionID.ToString());
-	}
-	// 시작 카운트다운
-	StartWidgetPlay();
 
-	// 초기화에 쓰일 빈 구조체
-	tempStruct.name = {};
-	tempStruct.score = 0;
+	pc = Cast<ABDGGPlayerController>(GetOwningLocalPlayer()->GetPlayerController(GetWorld()));
+
 	// 랭킹표 구성요소들을 담은 배열
 	textblockRankIdArray = { TextBlock_RankID1, TextBlock_RankID2, TextBlock_RankID3, TextBlock_RankID4 };
 	textblockRankScoreArray = { TextBlock_RankScore1, TextBlock_RankScore2, TextBlock_RankScore3, TextBlock_RankScore4 };
 	tempScoreArray = { tempScore1, tempScore2, tempScore3, tempScore4 };
+
+	gs = Cast<ABDGGGameState>(GetWorld()->GetGameState());
 }
 
 void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	// 틱마다 랭킹 갱신
+
 	RefreshRanking();
+
+	if (gs->GetMatchState() == FName("Started") && !bDoOnce)
+	{
+		bDoOnce = true;
+		if (GetOwningPlayerPawn()->HasAuthority())
+		{
+			FTimerHandle hd;
+			GetWorld()->GetTimerManager().SetTimer(hd, FTimerDelegate::CreateLambda([&]()
+				{
+					StartWidgetPlay();
+				}), 1.f, false);
+		}
+		else
+		{
+			StartWidgetPlay();
+		}
+	}
 }
 
 void UGameModeWidget::RefreshRanking()
 {
 	// playerstate array 가져오기
 	auto playerStateArray = GetWorld()->GetGameState()->PlayerArray;
-	// arraysize 가져오기
-	int arraySize = playerStateArray.Num();
-	// 정보 담을 구조체 배열 만들기
-	TArray<FPlayerInfo> nameScoreArr;
-	// 배열 초기화
-	nameScoreArr.Init(tempStruct, arraySize);
-	// 구조체에 각각 이름과 점수 채워주기
-	for(int i = 0; i < arraySize; i++)
-	{
-		nameScoreArr[i].name = playerStateArray[i]->GetPlayerName();
-		nameScoreArr[i].score = playerStateArray[i]->GetScore();
-	}
-	// 구조체 배열을 점수에 따라 정렬
-	nameScoreArr.Sort([](const FPlayerInfo& A, const FPlayerInfo& B)
+
+	playerStateArray.Sort([](const APlayerState& A, const APlayerState& B)
 		{
-			return A.score > B.score;
+			return A.GetScore() > B.GetScore();
 		});
+
 	// 정렬된 순서대로 랭킹표에 출력
-	for(int i = 0; i < arraySize; i++)
+	for(int i = 0; i < playerStateArray.Num(); i++)
 	{
-		textblockRankIdArray[i]->SetText(FText::FromString(nameScoreArr[i].name));
-		if (tempScoreArray[i] < nameScoreArr[i].score)
+		textblockRankIdArray[i]->SetVisibility(ESlateVisibility::Visible);
+		textblockRankIdArray[i]->SetText(FText::FromString(playerStateArray[i]->GetPlayerName()));
+
+		textblockRankScoreArray[i]->SetVisibility(ESlateVisibility::Visible);
+		if (tempScoreArray[i] < playerStateArray[i]->GetScore())
 		{
 			textblockRankScoreArray[i]->SetText(FText::AsNumber(tempScoreArray[i] += scoreSpeed));
 		}
+	}
+	if (!playerStateArray.IsEmpty())
+	{
+		winnerID = playerStateArray[0]->GetPlayerName();
 	}
 }
 
@@ -97,6 +100,8 @@ void UGameModeWidget::CountDownTimer(int TimeInSec)
 
 void UGameModeWidget::StartWidgetPlay()
 {
+	AllPlayerDontMoveServer();
+
 	GetWorld()->GetTimerManager().SetTimer(startCountHandle, FTimerDelegate::CreateLambda([&]() {
 		if (startCountNum != 0)
 		{
@@ -105,8 +110,9 @@ void UGameModeWidget::StartWidgetPlay()
 		else
 		{
 			TextBlock_StartCount->SetText(FText::FromString("Start!"));
-			GetWorld()->GetTimerManager().ClearTimer(startCountHandle);
 			CountDownTimer(playTime);
+			GetWorld()->GetTimerManager().ClearTimer(startCountHandle);
+			AllPlayerCanMoveServer();
 		}
 		PlayAnimation(Anim_StartCount);
 		startCountNum--;
@@ -136,10 +142,27 @@ void UGameModeWidget::UpdateMinAndSec()
 
 void UGameModeWidget::GameEnd()
 {
+	AllPlayerDontMoveServer();
+
+	// 승자처리
+	auto ps = Cast<ABDGGPlayerState>(GetOwningPlayerState());
+	if (ps)
+	{
+		myID = ps->GetPlayerName();
+	}
+
+	if (myID == winnerID)
+	{
+		TextBlock_StartCount->SetText(FText::FromString("Win!"));
+	}
+	else
+	{
+		TextBlock_StartCount->SetText(FText::FromString("Lose.."));
+	}
+
 	scoreSpeed = 50;
 	ResetScoreBeforeGameEnd();
 	PlayAnimation(Anim_EndScoreChart);
-	TextBlock_StartCount->SetText(FText::FromString("Win!"));
 	PlayAnimation(Anim_EndText);
 }
 
@@ -149,4 +172,24 @@ void UGameModeWidget::ResetScoreBeforeGameEnd()
 	tempScore2 = 0;
 	tempScore3 = 0;
 	tempScore4 = 0;
+}
+
+void UGameModeWidget::AllPlayerDontMoveServer_Implementation()
+{
+	AllPlayerDontMoveMulti();
+}
+
+void UGameModeWidget::AllPlayerCanMoveServer_Implementation()
+{
+	AllPlayerCanMoveMulti();
+}
+
+void UGameModeWidget::AllPlayerDontMoveMulti_Implementation()
+{
+	GetOwningPlayerPawn()->DisableInput(pc);
+}
+
+void UGameModeWidget::AllPlayerCanMoveMulti_Implementation()
+{
+	GetOwningPlayerPawn()->EnableInput(pc);
 }

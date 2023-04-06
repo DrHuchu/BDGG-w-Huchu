@@ -39,11 +39,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Brick")
 	TSubclassOf<class AFieldSystemActor> masterField;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Brick")
+	class UWidgetComponent* scoreWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Brick")
+	TSubclassOf<class UUserWidget> scoreFactory;
+
 	UFUNCTION()
 	void OnBlockHit();
 
-	UFUNCTION()
+	UFUNCTION(Server, Unreliable)
 	virtual void AddScore();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	virtual void SpawnFX();
 
 	class ABDGGGameMode* gm;
 

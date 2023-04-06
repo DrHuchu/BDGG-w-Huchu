@@ -48,6 +48,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UBDGGPlayerMoveComponent* moveComp;
 
+	UFUNCTION(Server, Unreliable)
+	void DoFireServer();
 
+	UFUNCTION(NetMulticast, Unreliable)
+	void DoFireMulticast();
 
+	UPROPERTY(EditAnywhere)
+	class USoundBase* fireSound;
 };

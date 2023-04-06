@@ -43,7 +43,7 @@ void UBDGGGameInstance::OnCreationSessionComplete(FName sessionName, bool bIsSuc
 
 	if (bIsSuccess)
 	{
-		GetWorld()->ServerTravel("/Game/Maps/HuchuMap_DesignTest?Listen");
+		GetWorld()->ServerTravel("/Game/Maps/LobbyMap?Listen");
 	}
 }
 
