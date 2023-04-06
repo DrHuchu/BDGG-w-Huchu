@@ -9,6 +9,7 @@
 #include "Bullet.h"
 #include "Kismet/GameplayStatics.h"
 #include "BDGGPlayer_AnimInstance.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 ABDGGPlayer::ABDGGPlayer()
@@ -60,12 +61,17 @@ ABDGGPlayer::ABDGGPlayer()
 	// 이동컴포넌트와 총쏘기컴포넌트를 생성하고싶다.
 	moveComp = CreateDefaultSubobject<UBDGGPlayerMoveComponent>(TEXT("moveComp"));
 
+	
 }
 
 // Called when the game starts or when spawned
 void ABDGGPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	crosshairUI = CreateWidget(GetWorld(), crosshairFactory);
+	crosshairUI->AddToViewport();
+
 	
 }
 
@@ -73,6 +79,7 @@ void ABDGGPlayer::BeginPlay()
 void ABDGGPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 
 }
 
@@ -111,14 +118,36 @@ void ABDGGPlayer::DoFire()
 	//중에 찾아보기
 	//플레이어 1m 앞
 
-	FTransform t =gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
-	ABullet* bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
-
-	if(bullet)
+	
+	//만약 아이템없다면
+	if (itemnum == 0)
 	{
-		bullet->SetOwner(this);
-		UE_LOG(LogTemp, Warning, TEXT("owner name is : %s"), *bullet->GetOwner()->GetName());
+	//노란총알이 나가게 하고싶다
+	
+		FTransform t = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
+	//소
+		t.SetRotation(GetControlRotation().Quaternion());
+		ABullet* bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
 
+		if (bullet)
+		{
+			bullet->SetOwner(this);
+		}
+	}
+	//아이템이 있다면 (itemnum != 0);
+	else
+	{
+		//파란총알이 나가게 하고싶다.
+		FTransform t = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
+		t.SetRotation(GetControlRotation().Quaternion());
+		ABullet* bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory2, t);
+
+		if (bullet)
+		{
+			bullet->SetOwner(this);
+		}
+		//파란총알의 갯수에서 -1을 뺀다.
+		itemnum = itemnum - 1;
 	}
 }
 
@@ -126,6 +155,7 @@ void ABDGGPlayer::DoFireMulticast_Implementation()
 {
 	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), fireSound, GetActorLocation(), GetActorRotation());
 }
+
 
 void ABDGGPlayer::DoFireServer_Implementation()
 {

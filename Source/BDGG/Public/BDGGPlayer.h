@@ -36,6 +36,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ABullet> bulletFactory;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ABullet> bulletFactory2;
+
+	UPROPERTY(EditAnywhere)
+	int32 itemnum;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class USkeletalMeshComponent* gunMeshComp;
 
@@ -54,6 +60,16 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void DoFireMulticast();
 
+	
+
 	UPROPERTY(EditAnywhere)
 	class USoundBase* fireSound;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> crosshairFactory;
+		
+	UPROPERTY()
+	UUserWidget* crosshairUI;
+
+	
 };
