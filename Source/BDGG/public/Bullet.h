@@ -33,9 +33,12 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Bullet")
 	class AUnbreakable* unbreakable;
 
+	UPROPERTY(VisibleAnywhere, Category = "Bullet")
+	class ABDGGPlayer* player;
+
 	//함수 관련
 	UFUNCTION()
-	void BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bBFromSweep, const FHitResult& SweepResult);
+	virtual void BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bBFromSweep, const FHitResult& SweepResult);
 
 
 };

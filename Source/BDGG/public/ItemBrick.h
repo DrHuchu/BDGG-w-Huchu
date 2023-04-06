@@ -13,10 +13,10 @@ UCLASS()
 class BDGG_API AItemBrick : public ABrickBase
 {
 	GENERATED_BODY()
-	virtual void AddScore() override;
+	
 
 public:
-	UPROPERTY(VisibleAnywhere, Category = "Brick")
+	UPROPERTY(EditAnywhere, Category = "Brick")
 		int32 brickMaxHP = 2;
 
 	UPROPERTY(VisibleAnywhere, Category = "Brick")
@@ -31,4 +31,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Brick")
 		TSubclassOf<class AItem> itemFactory;
 
+	virtual void AddScore_Implementation() override;
+
+	virtual void SpawnFX_Implementation() override;;
 };

@@ -122,14 +122,19 @@ void ABDGGPlayer::DoFire()
 	}
 }
 
-void ABDGGPlayer::DoFireMulticast_Implementation()
+void ABDGGPlayer::SpawnFireSound_Implementation()
 {
 	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), fireSound, GetActorLocation(), GetActorRotation());
+}
+
+void ABDGGPlayer::DoFireMulticast_Implementation()
+{
+	
 }
 
 void ABDGGPlayer::DoFireServer_Implementation()
 {
 	DoFire();
-	DoFireMulticast();
+	SpawnFireSound();
 }
 

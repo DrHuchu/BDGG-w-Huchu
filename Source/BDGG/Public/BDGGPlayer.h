@@ -56,4 +56,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	class USoundBase* fireSound;
+
+	UFUNCTION(Client, Unreliable)
+	void SpawnFireSound();
 };
