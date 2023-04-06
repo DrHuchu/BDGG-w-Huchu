@@ -43,8 +43,7 @@ void ULobbyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void ULobbyWidget::LobbyGameStart()
 {
-	gi->totalPlayerNum = tempTotalPlayerNum;
-
+	btn_GameStart->SetIsEnabled(false);
 	GetOwningPlayerState()->GetPlayerController()->SetShowMouseCursor(false);
 	GetWorld()->ServerTravel("/Game/Maps/HuchuMap_DesignTest?Listen");
 }
@@ -73,9 +72,9 @@ void ULobbyWidget::RefreshLobbyName()
 		}
 	}
 
-	if (tempTotalPlayerNum < tempArray.Num())
+	if (gi->totalPlayerNum < tempArray.Num())
 	{
-		tempTotalPlayerNum = tempArray.Num();
+		gi->totalPlayerNum = tempArray.Num();
 	}
 }
 

@@ -6,6 +6,7 @@
 #include "BDGGPlayerController.h"
 #include "BDGGPlayerState.h"
 #include "BDGGGameState.h"
+#include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "GameFramework/GameStateBase.h"
@@ -23,6 +24,14 @@ void UGameModeWidget::NativeConstruct()
 	tempScoreArray = { tempScore1, tempScore2, tempScore3, tempScore4 };
 
 	gs = Cast<ABDGGGameState>(GetWorld()->GetGameState());
+
+
+	if (GetOwningPlayerPawn())
+	{
+		GetOwningPlayerPawn()->DisableInput(pc);
+	}
+
+	btn_Quit->OnClicked.AddDynamic(this, &UGameModeWidget::QuitGame);
 }
 
 void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -30,10 +39,12 @@ void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
 	RefreshRanking();
+	//UE_LOG(LogTemp, Warning, TEXT("state : %s"), *gs->GetMatchState().ToString());
 
 	if (gs->GetMatchState() == FName("Started") && !bDoOnce)
 	{
 		bDoOnce = true;
+		UE_LOG(LogTemp, Warning, TEXT("do once in"));
 		if (GetOwningPlayerPawn()->HasAuthority())
 		{
 			FTimerHandle hd;
@@ -44,6 +55,7 @@ void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		}
 		else
 		{
+			UE_LOG(LogTemp, Warning, TEXT("start widget play"));
 			StartWidgetPlay();
 		}
 	}
@@ -100,8 +112,6 @@ void UGameModeWidget::CountDownTimer(int TimeInSec)
 
 void UGameModeWidget::StartWidgetPlay()
 {
-	AllPlayerDontMoveServer();
-
 	GetWorld()->GetTimerManager().SetTimer(startCountHandle, FTimerDelegate::CreateLambda([&]() {
 		if (startCountNum != 0)
 		{
@@ -138,6 +148,12 @@ void UGameModeWidget::UpdateMinAndSec()
 	{
 		TextBlock_Sec->SetText(FText::AsNumber(countDownTimeSec));
 	}
+
+	if (countDownTime <= 15 && !bIsDesolved)
+	{
+		bIsDesolved = true;
+		PlayAnimation(Anim_DesolveScoreChart);
+	}
 }
 
 void UGameModeWidget::GameEnd()
@@ -164,6 +180,8 @@ void UGameModeWidget::GameEnd()
 	ResetScoreBeforeGameEnd();
 	PlayAnimation(Anim_EndScoreChart);
 	PlayAnimation(Anim_EndText);
+
+	GetOwningPlayerState()->GetPlayerController()->SetShowMouseCursor(true);
 }
 
 void UGameModeWidget::ResetScoreBeforeGameEnd()
@@ -172,6 +190,11 @@ void UGameModeWidget::ResetScoreBeforeGameEnd()
 	tempScore2 = 0;
 	tempScore3 = 0;
 	tempScore4 = 0;
+}
+
+void UGameModeWidget::QuitGame()
+{
+	UE_LOG(LogTemp, Warning, TEXT("exiittttttttt"));
 }
 
 void UGameModeWidget::AllPlayerDontMoveServer_Implementation()
