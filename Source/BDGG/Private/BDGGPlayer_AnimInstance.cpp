@@ -23,7 +23,9 @@ void UBDGGPlayer_AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		return;
 	}
 	moveSpeed = me->GetVelocity().Length();
+	
 
+	
 
 
 	/*
@@ -42,18 +44,19 @@ void UBDGGPlayer_AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	rotAngle = cosTheta >=0 ? degree : degree * -1.0f;
 	*/
 
-	//rotAngle = CalculateDirection(me->GetVelocity(), me->GetActorRotation());
+	
 	rotAngle = UKismetAnimationLibrary::CalculateDirection(me->GetVelocity(), me->GetActorRotation());
 
-	//bIsJumping = me->GetCharacterMovement()->IsFalling();
+	bIsJumping = me->GetCharacterMovement()->IsFalling();
 
-	//FRotator viewRot = me->GetBaseAimRotation();
-	//FRotator playerRot = me->GetActorRotation();
-	//FRotator deltaRot = playerRot - viewRot;
-	//pitch = deltaRot.GetNormalized().Pitch;
 
-	//UE_LOG(LogTemp, Warning, TEXT("movespeed is %f"), moveSpeed);
-	//UE_LOG(LogTemp, Warning, TEXT("pitch is %f"), pitch);
+
+	FRotator viewRot = me->GetBaseAimRotation();
+	FRotator playerRot = me->GetActorRotation();
+	FRotator deltaRot = playerRot - viewRot;
+	pitch = FMath::Clamp(deltaRot.GetNormalized().Pitch, -45.0f, 45.0f);
+
+
 }
 
 
