@@ -70,7 +70,7 @@ void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		}
 	}
 }
-
+// 틱마다 랭킹 갱신하여 각 순위에 출력
 void UGameModeWidget::RefreshRanking()
 {
 	// playerstate array 가져오기
@@ -98,7 +98,7 @@ void UGameModeWidget::RefreshRanking()
 		winnerID = playerStateArray[0]->GetPlayerName();
 	}
 }
-
+// 1초마다 시간을 감소시키는 타이머
 void UGameModeWidget::CountDownTimer(int TimeInSec)
 {
 	countDownTime = TimeInSec;
@@ -119,7 +119,8 @@ void UGameModeWidget::CountDownTimer(int TimeInSec)
 		}
 		}), 1.f, true);
 }
-
+// 카운트다운 후
+// 타이머를 시작되게 하는 함수
 void UGameModeWidget::StartWidgetPlay()
 {
 	GetWorld()->GetTimerManager().SetTimer(startCountHandle, FTimerDelegate::CreateLambda([&]() {
@@ -186,7 +187,7 @@ void UGameModeWidget::GameEnd()
 		TextBlock_StartCount->SetText(FText::FromString("Lose.."));
 	}
 
-	scoreSpeed = 50;
+	scoreSpeed = 10;
 	ResetScoreBeforeGameEnd();
 	PlayAnimation(Anim_EndScoreChart);
 	PlayAnimation(Anim_EndText);

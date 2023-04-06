@@ -87,7 +87,7 @@ public:
 	bool bIsDesolved;
 
 	UPROPERTY(EditDefaultsOnly)
-	int scoreSpeed = 10;
+	int scoreSpeed = 5;
 
 	UPROPERTY()
 	TArray <UTextBlock*> textblockRankIdArray;
