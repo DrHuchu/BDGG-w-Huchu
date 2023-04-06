@@ -66,8 +66,8 @@ public:
 	int countDownTimeSec;
 	int startCountNum = 3;
 
-	UPROPERTY(EditDefaultsOnly)
-	int playTime = 12;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int playTime = 60;
 
 	FTimerHandle countDownTimerHandle;
 	FTimerHandle startCountHandle;

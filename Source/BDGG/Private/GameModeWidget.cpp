@@ -6,16 +6,18 @@
 #include "BDGGPlayerController.h"
 #include "BDGGPlayerState.h"
 #include "BDGGGameState.h"
+#include "BDGGPlayer.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
+#include "EngineUtils.h"
 
 void UGameModeWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
+	// 컨트롤러 캐싱
 	pc = Cast<ABDGGPlayerController>(GetOwningLocalPlayer()->GetPlayerController(GetWorld()));
 
 	// 랭킹표 구성요소들을 담은 배열
@@ -25,13 +27,21 @@ void UGameModeWidget::NativeConstruct()
 
 	gs = Cast<ABDGGGameState>(GetWorld()->GetGameState());
 
-
+	// 시작전까지 못 움직이게 세팅
 	if (GetOwningPlayerPawn())
 	{
 		GetOwningPlayerPawn()->DisableInput(pc);
 	}
 
+	// 게임 끝나고 나가기 버튼 바인딩
 	btn_Quit->OnClicked.AddDynamic(this, &UGameModeWidget::QuitGame);
+
+	// 게임끝나고 재접속 시 doOnce변수들 초기화
+	if (GetWorld()->GetMapName().Contains("Lobby"))
+	{
+		bDoOnce = false;
+		bIsDesolved = false;
+	}
 }
 
 void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -194,7 +204,32 @@ void UGameModeWidget::ResetScoreBeforeGameEnd()
 
 void UGameModeWidget::QuitGame()
 {
-	UE_LOG(LogTemp, Warning, TEXT("exiittttttttt"));
+	if (GetOwningPlayer()->HasAuthority())
+	{
+		for (TActorIterator<ABDGGPlayer> pl(GetWorld()); pl; ++pl)
+		{
+			ABDGGPlayer* player = *pl;
+			if (!player->HasAuthority())
+			{
+				auto controller = Cast<ABDGGPlayerController>(player->GetController());
+				if (controller && controller->IsLocalController())
+				{
+					controller->ServerEndSession();
+				}
+			}
+		}
+
+		FTimerHandle destroySessionHandle;
+		GetWorld()->GetTimerManager().SetTimer(destroySessionHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			pc->ServerEndSession();
+		}), 1.f, false);
+	}
+	else
+	{
+		pc->ServerEndSession();
+	}
+
 }
 
 void UGameModeWidget::AllPlayerDontMoveServer_Implementation()
