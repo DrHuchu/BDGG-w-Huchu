@@ -31,10 +31,16 @@ public:
 
 	void DoFire();
 
-	//¸¶¿ì½º ¿ÞÂÊ¹öÆ°À»´©¸£¸é ÃÑ¾Ë°øÀå¿¡¼­ ÃÑ¾ËÀ»¸¸µé¾î¼­ 
-	//ÃÑ±¸À§Ä¡¿¡ ¹èÄ¡ÇÏ°í½Í´Ù.
+	//ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½Ê¹ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾Ë°ï¿½ï¿½å¿¡ï¿½ï¿½ ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¼­ 
+	//ï¿½Ñ±ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ï°ï¿½ï¿½Í´ï¿½.
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ABullet> bulletFactory;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ABullet> bulletFactory2;
+
+	UPROPERTY(EditAnywhere)
+	int32 itemnum;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class USkeletalMeshComponent* gunMeshComp;
@@ -51,12 +57,15 @@ public:
 	UFUNCTION(Server, Unreliable)
 	void DoFireServer();
 
-	UFUNCTION(NetMulticast, Unreliable)
-	void DoFireMulticast();
-
 	UPROPERTY(EditAnywhere)
 	class USoundBase* fireSound;
 
 	UFUNCTION(Client, Unreliable)
 	void SpawnFireSound();
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> crosshairFactory;
+		
+	UPROPERTY()
+	UUserWidget* crosshairUI;
 };

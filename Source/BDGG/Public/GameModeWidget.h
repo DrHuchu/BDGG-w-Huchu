@@ -46,6 +46,8 @@ public:
 	class UTextBlock* TextBlock_RankScore4;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UVerticalBox* VerticalBox_Ranking;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UButton* btn_Quit;
 
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidgetAnim))
 	class UWidgetAnimation* Anim_StartCount;
@@ -53,6 +55,8 @@ public:
 	class UWidgetAnimation* Anim_EndScoreChart;
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidgetAnim))
 	class UWidgetAnimation* Anim_EndText;
+	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidgetAnim))
+	class UWidgetAnimation* Anim_DesolveScoreChart;
 
 	void RefreshRanking();
 
@@ -62,8 +66,8 @@ public:
 	int countDownTimeSec;
 	int startCountNum = 3;
 
-	UPROPERTY(EditDefaultsOnly)
-	int playTime = 12;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int playTime = 60;
 
 	FTimerHandle countDownTimerHandle;
 	FTimerHandle startCountHandle;
@@ -80,9 +84,10 @@ public:
 	int tempScore4;
 
 	bool bDoOnce;
+	bool bIsDesolved;
 
 	UPROPERTY(EditDefaultsOnly)
-	int scoreSpeed = 10;
+	int scoreSpeed = 5;
 
 	UPROPERTY()
 	TArray <UTextBlock*> textblockRankIdArray;
@@ -101,5 +106,7 @@ public:
 	void AllPlayerCanMoveServer();
 	UFUNCTION(NetMulticast, Unreliable)
 	void AllPlayerCanMoveMulti();
+	UFUNCTION()
+	void QuitGame();
 
 };

@@ -18,25 +18,37 @@ ABDGGGameMode::ABDGGGameMode()
 	if (PlayerPawnBPClass.Class != NULL)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
-	}  
+	}
 }
 
 void ABDGGGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	gi = Cast<UBDGGGameInstance>(GetGameInstance());
-	totalPlayerNum = gi->totalPlayerNum;
+
 }
 
 void ABDGGGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
+
 	connectedPlayerNum++;
-	UE_LOG(LogTemp, Warning, TEXT("Current %d / Total %d"), connectedPlayerNum, totalPlayerNum);
-	
-	if (connectedPlayerNum == totalPlayerNum && totalPlayerNum != 0)
+
+	//UE_LOG(LogTemp, Warning, TEXT("MapName is %s"), *GetWorld()->GetMapName());
+
+	gi = Cast<UBDGGGameInstance>(GetGameInstance());
+	if (gi && GetWorld()->GetMapName().Contains("Huchu"))
 	{
-		GetGameState<ABDGGGameState>()->SetMatchState(FName("Started"));
+		FTimerHandle delayHandle;
+		GetWorldTimerManager().SetTimer(delayHandle, FTimerDelegate::CreateLambda([&]()
+			{
+				totalPlayerNum = gi->totalPlayerNum;
+				//UE_LOG(LogTemp, Warning, TEXT("Current %d / Total %d"), connectedPlayerNum, totalPlayerNum);
+				if (connectedPlayerNum == totalPlayerNum && totalPlayerNum != 0)
+				{
+					GetGameState<ABDGGGameState>()->SetMatchState(FName("Started"));
+					//UE_LOG(LogTemp, Warning, TEXT("State Seted!!!!!!!!!!!!"));
+				}
+			}), 1.f, false);
 	}
 }
 

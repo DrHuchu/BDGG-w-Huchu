@@ -31,8 +31,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = AnimSettings)
 	bool bIsJumping = false;
 		
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimSettings)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = AnimSettings)
 	float pitch = 0;
+
 	
 	UPROPERTY(EditAnywhere)
 	class UAnimMontage* fireMontageFactory;

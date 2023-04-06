@@ -53,6 +53,4 @@ public:
 	void LobbyGameStart();
 	UFUNCTION()
 	void RefreshLobbyName();
-
-	int tempTotalPlayerNum;
 };

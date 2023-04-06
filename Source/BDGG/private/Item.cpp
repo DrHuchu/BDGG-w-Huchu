@@ -41,9 +41,9 @@ void AItem::ItemGet(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor
 	if(player)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Stun gun bullet +1"));
-		//플레이어의 총을 스턴 건으로 변경
-
+		
 		//플레이어가 갖고 있는 스턴건 총알 수 +1
+		
 
 		Destroy();
 	}

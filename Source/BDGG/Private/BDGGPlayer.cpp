@@ -9,6 +9,7 @@
 #include "Bullet.h"
 #include "Kismet/GameplayStatics.h"
 #include "BDGGPlayer_AnimInstance.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 ABDGGPlayer::ABDGGPlayer()
@@ -17,39 +18,39 @@ ABDGGPlayer::ABDGGPlayer()
 	PrimaryActorTick.bCanEverTick = true;
 
 
-	// sudo code ÀÇ»çÄÚµå => ¾Ë°í¸®Áò
-	// 1. ¿Ü°ü¿¡ ÇØ´çÇÏ´Â ¿¡¼ÂÀ» ÀÐ¾î¿À°í½Í´Ù.
+	// sudo code ï¿½Ç»ï¿½ï¿½Úµï¿½ => ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½
+	// 1. ï¿½Ü°ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½.
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn.SKM_Quinn'"));
-	// 2. ÀÐ¾î¿ÔÀ»¶§ ¼º°øÇß´Ù¸é
+	// 2. ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´Ù¸ï¿½
 	if (tempMesh.Succeeded())
 	{
-		// 3. Mesh¿¡ Àû¿ëÇÏ°í½Í´Ù. 
+		// 3. Meshï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ï¿½Í´ï¿½. 
 		GetMesh()->SetSkeletalMesh(tempMesh.Object);
-		// 4. Transform À» ¼öÁ¤ÇÏ°í½Í´Ù.
+		// 4. Transform ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ï¿½Í´ï¿½.
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, -90, 0));
 	}
 
-	// ½ºÇÁ¸µ¾Ï, Ä«¸Þ¶ó ÄÄÆ÷³ÍÆ®¸¦ »ý¼ºÇÏ°í½Í´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ï¿½Í´ï¿½.
 	springArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("springArmComp"));
 	cameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("cameraComp"));
-	// ½ºÇÁ¸µ¾ÏÀ» ·çÆ®¿¡ ºÙÀÌ°í
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½
 	springArmComp->SetupAttachment(RootComponent);
-	// Ä«¸Þ¶ó´Â ½ºÇÁ¸µ¾Ï¿¡ ºÙÀÌ°í½Í´Ù.
+	// Ä«ï¿½Þ¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ï¿½Í´ï¿½.
 	cameraComp->SetupAttachment(springArmComp);
 
 	springArmComp->SetRelativeLocation(FVector(0, 50, 100));
 	springArmComp->TargetArmLength = 250;
 
-	// ÀÔ·Â°ªÀ» È¸Àü¿¡ ¹Ý¿µÇÏ°í½Í´Ù.
+	// ï¿½Ô·Â°ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¿ï¿½ï¿½Ï°ï¿½ï¿½Í´ï¿½.
 	bUseControllerRotationYaw = true;
 	springArmComp->bUsePawnControlRotation = true;
 	cameraComp->bUsePawnControlRotation = true;
 
 
-	// ÀÏ¹ÝÃÑÀÇ ÄÄÆ÷³ÍÆ®¸¦ ¸¸µé°í½Í´Ù.
+	// ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½.
 	gunMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("gunMeshComp"));
 	gunMeshComp->SetupAttachment(GetMesh(), TEXT("hand_rSocket"));
-	// ÀÏ¹ÝÃÑÀÇ ¿¡¼ÂÀ» ÀÐ¾î¼­ ÄÄÆ÷³ÍÆ®¿¡ ³Ö°í½Í´Ù.
+	// ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ö°ï¿½ï¿½Í´ï¿½.
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempGunMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/FPWeapon/Mesh/SK_FPGun.SK_FPGun'"));
 	if (tempGunMesh.Succeeded())
 	{
@@ -57,15 +58,20 @@ ABDGGPlayer::ABDGGPlayer()
 		gunMeshComp->SetRelativeLocationAndRotation(FVector(-9, -2, -6), FRotator(0, 100, -20));
 	} 
 
-	// ÀÌµ¿ÄÄÆ÷³ÍÆ®¿Í ÃÑ½î±âÄÄÆ÷³ÍÆ®¸¦ »ý¼ºÇÏ°í½Í´Ù.
+	// ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ñ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ï¿½Í´ï¿½.
 	moveComp = CreateDefaultSubobject<UBDGGPlayerMoveComponent>(TEXT("moveComp"));
 
+	
 }
 
 // Called when the game starts or when spawned
 void ABDGGPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	crosshairUI = CreateWidget(GetWorld(), crosshairFactory);
+	crosshairUI->AddToViewport();
+
 	
 }
 
@@ -73,6 +79,7 @@ void ABDGGPlayer::BeginPlay()
 void ABDGGPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 
 }
 
@@ -94,7 +101,7 @@ void ABDGGPlayer::OnActionFirePressed()
 {
 	DoFireServer();
 
-	//ÃÑ½î´Â ¾Ö´Ï¸ÞÀÌ¼ÇÀ» »ç¿ëÇÏ°í½Í´Ù
+	//ï¿½Ñ½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ï¿½Í´ï¿½
 	auto anim = Cast<UBDGGPlayer_AnimInstance>(GetMesh()->GetAnimInstance());
 	anim->OnFire();
 }
@@ -107,29 +114,46 @@ void ABDGGPlayer::OnActionFireReleased()
 void ABDGGPlayer::DoFire()
 {
 	//SpawnActor
-	//ÀÌ·±°Å Ã£À» ¶§ APlayer Getworld UKismetMathLibrary, UGameplayStatics
-	//Áß¿¡ Ã£¾Æº¸±â
-	//ÇÃ·¹ÀÌ¾î 1m ¾Õ
+	//ï¿½Ì·ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ APlayer Getworld UKismetMathLibrary, UGameplayStatics
+	//ï¿½ß¿ï¿½ Ã£ï¿½Æºï¿½ï¿½ï¿½
+	//ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ 1m ï¿½ï¿½
 
-	FTransform t =gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
-	ABullet* bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
-
-	if(bullet)
+	
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Û¾ï¿½ï¿½Ù¸ï¿½
+	if (itemnum == 0)
 	{
-		bullet->SetOwner(this);
-		UE_LOG(LogTemp, Warning, TEXT("owner name is : %s"), *bullet->GetOwner()->GetName());
+	//ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½ï¿½Í´ï¿½
+	
+		FTransform t = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
+	//ï¿½ï¿½
+		t.SetRotation(GetControlRotation().Quaternion());
+		ABullet* bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
 
+		if (bullet)
+		{
+			bullet->SetOwner(this);
+		}
+	}
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ (itemnum != 0);
+	else
+	{
+		//ï¿½Ä¶ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½ï¿½Í´ï¿½.
+		FTransform t = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
+		t.SetRotation(GetControlRotation().Quaternion());
+		ABullet* bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory2, t);
+
+		if (bullet)
+		{
+			bullet->SetOwner(this);
+		}
+		//ï¿½Ä¶ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ -1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+		itemnum = itemnum - 1;
 	}
 }
 
 void ABDGGPlayer::SpawnFireSound_Implementation()
 {
 	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), fireSound, GetActorLocation(), GetActorRotation());
-}
-
-void ABDGGPlayer::DoFireMulticast_Implementation()
-{
-	
 }
 
 void ABDGGPlayer::DoFireServer_Implementation()

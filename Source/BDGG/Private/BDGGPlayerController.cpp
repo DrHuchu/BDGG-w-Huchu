@@ -35,9 +35,15 @@ void ABDGGPlayerController::BeginPlay()
 	}
 }
 
-void ABDGGPlayerController::Tick(float DeltaSeconds)
+void ABDGGPlayerController::MultiEndSession_Implementation()
 {
-	
+	gi->sessionInterface->DestroySession(gi->sessionID);
+	ClientTravel("/Game/Maps/LoginMap1", ETravelType::TRAVEL_Absolute);
+}
+
+void ABDGGPlayerController::ServerEndSession_Implementation()
+{
+	MultiEndSession();
 }
 
 void ABDGGPlayerController::ServerSetName_Implementation(const FString& name)

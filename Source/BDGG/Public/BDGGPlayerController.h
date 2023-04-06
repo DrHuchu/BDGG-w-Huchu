@@ -19,7 +19,6 @@ public:
 	ABDGGPlayerController();
 
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class UGameModeWidget> gameModeWidgetFactory;
@@ -36,4 +35,9 @@ public:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerSetName(const FString& name);
+	UFUNCTION(Server, Unreliable)
+	void ServerEndSession();
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiEndSession();
+
 };

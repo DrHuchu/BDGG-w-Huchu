@@ -6,15 +6,18 @@
 #include "BDGGPlayerController.h"
 #include "BDGGPlayerState.h"
 #include "BDGGGameState.h"
+#include "BDGGPlayer.h"
+#include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
+#include "EngineUtils.h"
 
 void UGameModeWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
+	// 컨트롤러 캐싱
 	pc = Cast<ABDGGPlayerController>(GetOwningLocalPlayer()->GetPlayerController(GetWorld()));
 
 	// 랭킹표 구성요소들을 담은 배열
@@ -23,6 +26,22 @@ void UGameModeWidget::NativeConstruct()
 	tempScoreArray = { tempScore1, tempScore2, tempScore3, tempScore4 };
 
 	gs = Cast<ABDGGGameState>(GetWorld()->GetGameState());
+
+	// 시작전까지 못 움직이게 세팅
+	if (GetOwningPlayerPawn())
+	{
+		GetOwningPlayerPawn()->DisableInput(pc);
+	}
+
+	// 게임 끝나고 나가기 버튼 바인딩
+	btn_Quit->OnClicked.AddDynamic(this, &UGameModeWidget::QuitGame);
+
+	// 게임끝나고 재접속 시 doOnce변수들 초기화
+	if (GetWorld()->GetMapName().Contains("Lobby"))
+	{
+		bDoOnce = false;
+		bIsDesolved = false;
+	}
 }
 
 void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -30,10 +49,12 @@ void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
 	RefreshRanking();
+	//UE_LOG(LogTemp, Warning, TEXT("state : %s"), *gs->GetMatchState().ToString());
 
 	if (gs->GetMatchState() == FName("Started") && !bDoOnce)
 	{
 		bDoOnce = true;
+		UE_LOG(LogTemp, Warning, TEXT("do once in"));
 		if (GetOwningPlayerPawn()->HasAuthority())
 		{
 			FTimerHandle hd;
@@ -44,11 +65,12 @@ void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		}
 		else
 		{
+			UE_LOG(LogTemp, Warning, TEXT("start widget play"));
 			StartWidgetPlay();
 		}
 	}
 }
-
+// 틱마다 랭킹 갱신하여 각 순위에 출력
 void UGameModeWidget::RefreshRanking()
 {
 	// playerstate array 가져오기
@@ -76,7 +98,7 @@ void UGameModeWidget::RefreshRanking()
 		winnerID = playerStateArray[0]->GetPlayerName();
 	}
 }
-
+// 1초마다 시간을 감소시키는 타이머
 void UGameModeWidget::CountDownTimer(int TimeInSec)
 {
 	countDownTime = TimeInSec;
@@ -97,11 +119,10 @@ void UGameModeWidget::CountDownTimer(int TimeInSec)
 		}
 		}), 1.f, true);
 }
-
+// 카운트다운 후
+// 타이머를 시작되게 하는 함수
 void UGameModeWidget::StartWidgetPlay()
 {
-	AllPlayerDontMoveServer();
-
 	GetWorld()->GetTimerManager().SetTimer(startCountHandle, FTimerDelegate::CreateLambda([&]() {
 		if (startCountNum != 0)
 		{
@@ -138,6 +159,12 @@ void UGameModeWidget::UpdateMinAndSec()
 	{
 		TextBlock_Sec->SetText(FText::AsNumber(countDownTimeSec));
 	}
+
+	if (countDownTime <= 15 && !bIsDesolved)
+	{
+		bIsDesolved = true;
+		PlayAnimation(Anim_DesolveScoreChart);
+	}
 }
 
 void UGameModeWidget::GameEnd()
@@ -160,10 +187,12 @@ void UGameModeWidget::GameEnd()
 		TextBlock_StartCount->SetText(FText::FromString("Lose.."));
 	}
 
-	scoreSpeed = 50;
+	scoreSpeed = 10;
 	ResetScoreBeforeGameEnd();
 	PlayAnimation(Anim_EndScoreChart);
 	PlayAnimation(Anim_EndText);
+
+	GetOwningPlayerState()->GetPlayerController()->SetShowMouseCursor(true);
 }
 
 void UGameModeWidget::ResetScoreBeforeGameEnd()
@@ -172,6 +201,36 @@ void UGameModeWidget::ResetScoreBeforeGameEnd()
 	tempScore2 = 0;
 	tempScore3 = 0;
 	tempScore4 = 0;
+}
+
+void UGameModeWidget::QuitGame()
+{
+	if (GetOwningPlayer()->HasAuthority())
+	{
+		for (TActorIterator<ABDGGPlayer> pl(GetWorld()); pl; ++pl)
+		{
+			ABDGGPlayer* player = *pl;
+			if (!player->HasAuthority())
+			{
+				auto controller = Cast<ABDGGPlayerController>(player->GetController());
+				if (controller && controller->IsLocalController())
+				{
+					controller->ServerEndSession();
+				}
+			}
+		}
+
+		FTimerHandle destroySessionHandle;
+		GetWorld()->GetTimerManager().SetTimer(destroySessionHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			pc->ServerEndSession();
+		}), 1.f, false);
+	}
+	else
+	{
+		pc->ServerEndSession();
+	}
+
 }
 
 void UGameModeWidget::AllPlayerDontMoveServer_Implementation()
