@@ -46,4 +46,5 @@ public:
 	void FindMySession();
 	void JoinMySession(int sessionIndex);
 
+	int totalPlayerNum;
 };

@@ -34,9 +34,15 @@ public:
 	class UTextBlock* text_LobbyPing3;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UTextBlock* text_LobbyPing4;
-
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UButton* btn_GameStart;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UImage* StartBG;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UImage* StartHoverFrame;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UImage* StartFrame;
+	
 
 	UPROPERTY()
 	TArray<UTextBlock*> lobbyNameArray;
@@ -47,4 +53,6 @@ public:
 	void LobbyGameStart();
 	UFUNCTION()
 	void RefreshLobbyName();
+
+	int tempTotalPlayerNum;
 };

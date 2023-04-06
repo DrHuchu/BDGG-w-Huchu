@@ -8,6 +8,7 @@
 #include "BDGGGameInstance.h"
 #include "GameModeWidget.h"
 #include "Components/Button.h"
+#include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
@@ -25,9 +26,12 @@ void ULobbyWidget::NativeConstruct()
 
 	gi->GetFirstLocalPlayerController()->SetShowMouseCursor(true);
 
-	if (!GetOwningPlayerPawn()->HasAuthority())
+	if (!GetOwningPlayer()->HasAuthority())
 	{
 		btn_GameStart->SetVisibility(ESlateVisibility::Hidden);
+		StartBG->SetVisibility(ESlateVisibility::Hidden);
+		StartHoverFrame->SetVisibility(ESlateVisibility::Hidden);
+		StartFrame->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -39,6 +43,8 @@ void ULobbyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void ULobbyWidget::LobbyGameStart()
 {
+	gi->totalPlayerNum = tempTotalPlayerNum;
+
 	GetOwningPlayerState()->GetPlayerController()->SetShowMouseCursor(false);
 	GetWorld()->ServerTravel("/Game/Maps/HuchuMap_DesignTest?Listen");
 }
@@ -65,6 +71,11 @@ void ULobbyWidget::RefreshLobbyName()
 		{
 			lobbyPingArray[i]->SetText(FText::FromString((FString::FromInt(tempArray[i]->GetPingInMilliseconds()) + ("ms"))));
 		}
+	}
+
+	if (tempTotalPlayerNum < tempArray.Num())
+	{
+		tempTotalPlayerNum = tempArray.Num();
 	}
 }
 

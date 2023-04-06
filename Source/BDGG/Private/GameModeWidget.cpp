@@ -3,8 +3,9 @@
 
 #include "GameModeWidget.h"
 
-#include "BDGGGameMode.h"
+#include "BDGGPlayerController.h"
 #include "BDGGPlayerState.h"
+#include "BDGGGameState.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "GameFramework/GameStateBase.h"
@@ -14,16 +15,14 @@ void UGameModeWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	// 게임모드 캐스팅
-	gm = Cast<ABDGGGameMode>(GetWorld()->GetAuthGameMode());
-
-	// 시작 카운트다운
-	StartWidgetPlay();
+	pc = Cast<ABDGGPlayerController>(GetOwningLocalPlayer()->GetPlayerController(GetWorld()));
 
 	// 랭킹표 구성요소들을 담은 배열
 	textblockRankIdArray = { TextBlock_RankID1, TextBlock_RankID2, TextBlock_RankID3, TextBlock_RankID4 };
 	textblockRankScoreArray = { TextBlock_RankScore1, TextBlock_RankScore2, TextBlock_RankScore3, TextBlock_RankScore4 };
 	tempScoreArray = { tempScore1, tempScore2, tempScore3, tempScore4 };
+
+	gs = Cast<ABDGGGameState>(GetWorld()->GetGameState());
 }
 
 void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -31,6 +30,23 @@ void UGameModeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
 	RefreshRanking();
+
+	if (gs->GetMatchState() == FName("Started") && !bDoOnce)
+	{
+		bDoOnce = true;
+		if (GetOwningPlayerPawn()->HasAuthority())
+		{
+			FTimerHandle hd;
+			GetWorld()->GetTimerManager().SetTimer(hd, FTimerDelegate::CreateLambda([&]()
+				{
+					StartWidgetPlay();
+				}), 1.f, false);
+		}
+		else
+		{
+			StartWidgetPlay();
+		}
+	}
 }
 
 void UGameModeWidget::RefreshRanking()
@@ -84,6 +100,8 @@ void UGameModeWidget::CountDownTimer(int TimeInSec)
 
 void UGameModeWidget::StartWidgetPlay()
 {
+	AllPlayerDontMoveServer();
+
 	GetWorld()->GetTimerManager().SetTimer(startCountHandle, FTimerDelegate::CreateLambda([&]() {
 		if (startCountNum != 0)
 		{
@@ -94,6 +112,7 @@ void UGameModeWidget::StartWidgetPlay()
 			TextBlock_StartCount->SetText(FText::FromString("Start!"));
 			CountDownTimer(playTime);
 			GetWorld()->GetTimerManager().ClearTimer(startCountHandle);
+			AllPlayerCanMoveServer();
 		}
 		PlayAnimation(Anim_StartCount);
 		startCountNum--;
@@ -123,6 +142,8 @@ void UGameModeWidget::UpdateMinAndSec()
 
 void UGameModeWidget::GameEnd()
 {
+	AllPlayerDontMoveServer();
+
 	// 승자처리
 	auto ps = Cast<ABDGGPlayerState>(GetOwningPlayerState());
 	if (ps)
@@ -151,4 +172,24 @@ void UGameModeWidget::ResetScoreBeforeGameEnd()
 	tempScore2 = 0;
 	tempScore3 = 0;
 	tempScore4 = 0;
+}
+
+void UGameModeWidget::AllPlayerDontMoveServer_Implementation()
+{
+	AllPlayerDontMoveMulti();
+}
+
+void UGameModeWidget::AllPlayerCanMoveServer_Implementation()
+{
+	AllPlayerCanMoveMulti();
+}
+
+void UGameModeWidget::AllPlayerDontMoveMulti_Implementation()
+{
+	GetOwningPlayerPawn()->DisableInput(pc);
+}
+
+void UGameModeWidget::AllPlayerCanMoveMulti_Implementation()
+{
+	GetOwningPlayerPawn()->EnableInput(pc);
 }
