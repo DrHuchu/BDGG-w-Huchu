@@ -27,6 +27,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Bullet")
 	class UStaticMeshComponent* meshComp;
 
+	UPROPERTY(EditAnywhere)
+	class UParticleSystemComponent* lightningBullet;
+
 	UPROPERTY(VisibleAnywhere, Category = "Bullet")
 	class ABrickBase* brick;
 
@@ -35,6 +38,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Bullet")
 	class ABDGGPlayer* player;
+
+	UPROPERTY(VIsibleAnywhere, Category = "Bullet")
+	ABullet* bullet;
 
 	//함수 관련
 	UFUNCTION()

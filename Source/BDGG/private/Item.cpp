@@ -40,10 +40,10 @@ void AItem::ItemGet(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor
 
 	if(player)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Stun gun bullet +1"));
+		//UE_LOG(LogTemp, Warning, TEXT("Stun gun bullet +1"));
 		
 		//플레이어가 갖고 있는 스턴건 총알 수 +1
-		
+		player->itemnum = player->itemnum + 1;
 
 		Destroy();
 	}

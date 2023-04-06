@@ -13,6 +13,7 @@ void ABullet_Stun::BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor*
 	//Super::BulletCrash(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bBFromSweep, SweepResult);
 
 	player = Cast<ABDGGPlayer>(OtherActor);
+	bullet = Cast<ABullet>(OtherActor);
 
 	if(player)
 	{
@@ -20,18 +21,23 @@ void ABullet_Stun::BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor*
 		//맞은 플레이어 2초간 행동 불가
 		if(pc)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Stun Bullet Hit"))
 			//맞은 플레이어 인풋 비활성화
 			pc->GetPawn()->DisableInput(pc);
 			//플레이어 몸통에 짜릿짜릿 파티클 추가
-			Stunned();
+			ServerStunned();
 			//2초 후에 플레이어 인풋 활성화
 			FTimerHandle stunTimer;
 			GetWorldTimerManager().SetTimer(stunTimer, this, &ABullet_Stun::StunOver, 2.0f, false);
 		}
 	}
+	else if(bullet)
+	{
+		return;
+	}
 	meshComp->SetHiddenInGame(true);
 	meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	lightningBullet->SetHiddenInGame(true);
 
 	FTimerHandle destroyTimer;
 	GetWorldTimerManager().SetTimer(destroyTimer, FTimerDelegate::CreateLambda([&]()
@@ -42,22 +48,29 @@ void ABullet_Stun::BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor*
 
 void ABullet_Stun::StunOver()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Stun Bullet Destroy"))
 	pc->GetPawn()->EnableInput(pc);
+}
+
+void ABullet_Stun::ServerStunned_Implementation()
+{
+	Stunned();
 }
 
 void ABullet_Stun::Stunned_Implementation()
 {
 	if(player)
 	{
-		auto lightningFX = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), lightning, player->GetActorLocation() + FVector(0, 0, -40), player->GetActorRotation());
+		lightningFX = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), lightning, player->GetActorLocation() + FVector(0, 0, -40), player->GetActorRotation());
 		FTimerHandle lightningTimer;
-		if(lightningFX)
-		{
+
 			GetWorldTimerManager().SetTimer(lightningTimer, FTimerDelegate::CreateLambda([&]()
 				{
-					lightningFX->DestroyComponent();
+					if (lightningFX)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("lightning done"));
+						//lightningFX->SetHiddenInGame(true);
+						lightningFX->DestroyComponent();
+					}
 				}), 2.0f, false);
-		}
 	}
 }

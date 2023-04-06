@@ -26,6 +26,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UParticleSystem* lightning;
 
+	UPROPERTY()
+	UParticleSystemComponent* lightningFX;
+
+	UFUNCTION(Server, Unreliable)
+	void ServerStunned();
+
 	UFUNCTION(NetMulticast, Unreliable)
 	void Stunned();
 
