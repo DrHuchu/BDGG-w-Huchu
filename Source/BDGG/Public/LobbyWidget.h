@@ -36,6 +36,13 @@ public:
 	class UTextBlock* text_LobbyPing4;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UButton* btn_GameStart;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UImage* StartBG;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UImage* StartHoverFrame;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UImage* StartFrame;
+	
 
 	UPROPERTY()
 	TArray<UTextBlock*> lobbyNameArray;
