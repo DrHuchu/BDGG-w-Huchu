@@ -60,7 +60,11 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void DoFireMulticast();
 
-	
+	UPROPERTY(VisibleAnywhere)
+	class UWidgetComponent* playerInfoUI;
+
+	UPROPERTY(VisibleAnywhere, Category = MySettings)
+	class UPlayerInfoWidget* infoWidget;
 
 	UPROPERTY(EditAnywhere)
 	class USoundBase* fireSound;

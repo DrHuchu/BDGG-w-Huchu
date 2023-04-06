@@ -10,6 +10,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "BDGGPlayer_AnimInstance.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
+#include "PlayerInfoWidget.h"
 
 // Sets default values
 ABDGGPlayer::ABDGGPlayer()
@@ -61,7 +63,9 @@ ABDGGPlayer::ABDGGPlayer()
 	// 이동컴포넌트와 총쏘기컴포넌트를 생성하고싶다.
 	moveComp = CreateDefaultSubobject<UBDGGPlayerMoveComponent>(TEXT("moveComp"));
 
-	
+	//플레이어 info ui를 만들고싶다.
+	playerInfoUI = CreateDefaultSubobject<UWidgetComponent>(TEXT("Player Info UI"));
+	playerInfoUI->SetupAttachment(GetMesh());
 }
 
 // Called when the game starts or when spawned
@@ -69,10 +73,12 @@ void ABDGGPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	crosshairUI = CreateWidget(GetWorld(), crosshairFactory);
-	crosshairUI->AddToViewport();
-
-	
+	if (GetWorld()->GetMapName().Contains("Huchu"))
+	{
+		crosshairUI = CreateWidget(GetWorld(), crosshairFactory);
+		crosshairUI->AddToViewport();
+	}
+	infoWidget = Cast<UPlayerInfoWidget>(playerInfoUI->GetWidget());
 }
 
 // Called every frame
