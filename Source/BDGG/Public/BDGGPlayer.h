@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -31,8 +31,8 @@ public:
 
 	void DoFire();
 
-	//¸¶¿ì½º ¿ŞÂÊ¹öÆ°À»´©¸£¸é ÃÑ¾Ë°øÀå¿¡¼­ ÃÑ¾ËÀ»¸¸µé¾î¼­ 
-	//ÃÑ±¸À§Ä¡¿¡ ¹èÄ¡ÇÏ°í½Í´Ù.
+	//ë§ˆìš°ìŠ¤ ì™¼ìª½ë²„íŠ¼ì„ëˆ„ë¥´ë©´ ì´ì•Œê³µì¥ì—ì„œ ì´ì•Œì„ë§Œë“¤ì–´ì„œ 
+	//ì´êµ¬ìœ„ì¹˜ì— ë°°ì¹˜í•˜ê³ ì‹¶ë‹¤.
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ABullet> bulletFactory;
 
