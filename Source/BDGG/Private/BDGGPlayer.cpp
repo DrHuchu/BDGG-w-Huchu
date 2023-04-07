@@ -97,7 +97,6 @@ void ABDGGPlayer::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	infoWidget->text_name->SetText(FText::FromString(myName));
-
 }
 
 // Called to bind functionality to input
