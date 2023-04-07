@@ -169,7 +169,7 @@ void UGameModeWidget::UpdateMinAndSec()
 
 void UGameModeWidget::GameEnd()
 {
-	AllPlayerDontMoveServer();
+	ResetScoreBeforeGameEnd();
 
 	// ½ÂÀÚÃ³¸®
 	auto ps = Cast<ABDGGPlayerState>(GetOwningPlayerState());
@@ -187,21 +187,26 @@ void UGameModeWidget::GameEnd()
 		TextBlock_StartCount->SetText(FText::FromString("Lose.."));
 	}
 
-	scoreSpeed = 10;
-	ResetScoreBeforeGameEnd();
+	//scoreSpeed = 10;
 	PlayAnimation(Anim_EndScoreChart);
 	PlayAnimation(Anim_EndText);
 
 	GetOwningPlayerState()->GetPlayerController()->SetShowMouseCursor(true);
 }
 
-void UGameModeWidget::ResetScoreBeforeGameEnd()
+void UGameModeWidget::ResetScoreBeforeGameEndMulti_Implementation()
 {
 	tempScore1 = 0;
 	tempScore2 = 0;
 	tempScore3 = 0;
 	tempScore4 = 0;
 }
+
+void UGameModeWidget::ResetScoreBeforeGameEnd_Implementation()
+{
+	ResetScoreBeforeGameEndMulti();
+}
+
 
 void UGameModeWidget::QuitGame()
 {

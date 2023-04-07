@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -31,8 +31,8 @@ public:
 
 	void DoFire();
 
-	//���콺 ���ʹ�ư�������� �Ѿ˰��忡�� �Ѿ������� 
-	//�ѱ���ġ�� ��ġ�ϰ��ʹ�.
+	//마우스 왼쪽버튼을누르면 총알공장에서 총알을만들어서 
+	//총구위치에 배치하고싶다.
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ABullet> bulletFactory;
 
@@ -57,6 +57,12 @@ public:
 	UFUNCTION(Server, Unreliable)
 	void DoFireServer();
 
+	UPROPERTY(VisibleAnywhere)
+	class UWidgetComponent* playerInfoUI;
+
+	UPROPERTY(VisibleAnywhere, Category = MySettings)
+	class UPlayerInfoWidget* infoWidget;
+
 	UPROPERTY(EditAnywhere)
 	class USoundBase* fireSound;
 
@@ -74,4 +80,10 @@ public:
 		
 	UPROPERTY()
 	UUserWidget* crosshairUI;
+
+	UFUNCTION(Server, Unreliable)
+	void ServerSetName(const FString& name);
+		
+	UPROPERTY(Replicated)
+	FString myName;	
 };
