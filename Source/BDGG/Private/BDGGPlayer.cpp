@@ -183,12 +183,9 @@ void ABDGGPlayer::ServerSetName_Implementation(const FString& name)
 	myName = name;
 }
 
-
-
 void ABDGGPlayer::DoFireServer_Implementation()
 {
 	DoFire();
-
 	if (itemnum == 0)
 	{
 		SpawnFireSound();

@@ -57,9 +57,6 @@ public:
 	UFUNCTION(Server, Unreliable)
 	void DoFireServer();
 
-	UFUNCTION(NetMulticast, Unreliable)
-	void DoFireMulticast();
-
 	UPROPERTY(VisibleAnywhere)
 	class UWidgetComponent* playerInfoUI;
 

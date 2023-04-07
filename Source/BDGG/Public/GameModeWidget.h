@@ -72,11 +72,18 @@ public:
 	FTimerHandle countDownTimerHandle;
 	FTimerHandle startCountHandle;
 
+	UFUNCTION()
 	void CountDownTimer(int TimeInSec);
+	UFUNCTION()
 	void StartWidgetPlay();
+	UFUNCTION()
 	void UpdateMinAndSec();
+	UFUNCTION()
 	void GameEnd();
+	UFUNCTION(Server, Unreliable)
 	void ResetScoreBeforeGameEnd();
+	UFUNCTION(NetMulticast, Unreliable)
+	void ResetScoreBeforeGameEndMulti();
 
 	int tempScore1;
 	int tempScore2;
@@ -87,7 +94,7 @@ public:
 	bool bIsDesolved;
 
 	UPROPERTY(EditDefaultsOnly)
-	int scoreSpeed = 5;
+	int scoreSpeed = 10;
 
 	UPROPERTY()
 	TArray <UTextBlock*> textblockRankIdArray;
