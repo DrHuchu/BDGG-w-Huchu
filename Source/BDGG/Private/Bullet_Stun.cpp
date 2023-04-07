@@ -51,16 +51,26 @@ void ABullet_Stun::StunOver()
 	pc->GetPawn()->EnableInput(pc);
 }
 
+void ABullet_Stun::SpawnChiririSound_Implementation()
+{
+	if(player)
+	{
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), chiriri, player->GetActorLocation(), player->GetActorRotation());	}
+}
+
 void ABullet_Stun::ServerStunned_Implementation()
 {
 	Stunned();
+
 }
 
 void ABullet_Stun::Stunned_Implementation()
 {
 	if(player)
 	{
+		SpawnChiririSound();
 		lightningFX = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), lightning, player->GetActorLocation() + FVector(0, 0, -40), player->GetActorRotation());
+
 		FTimerHandle lightningTimer;
 
 			GetWorldTimerManager().SetTimer(lightningTimer, FTimerDelegate::CreateLambda([&]()

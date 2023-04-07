@@ -70,6 +70,15 @@ public:
 	class USoundBase* fireSound;
 
 	UPROPERTY(EditAnywhere)
+	class USoundBase* fireSound2;
+
+	UFUNCTION(Client, Unreliable)
+	void SpawnFireSound();
+
+	UFUNCTION(Client, Unreliable)
+	void SpawnStunFireSound();
+
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> crosshairFactory;
 		
 	UPROPERTY()
@@ -79,8 +88,5 @@ public:
 	void ServerSetName(const FString& name);
 		
 	UPROPERTY(Replicated)
-	FString myName;
-	
-
-	
+	FString myName;	
 };

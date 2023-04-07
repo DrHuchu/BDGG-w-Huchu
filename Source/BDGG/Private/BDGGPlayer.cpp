@@ -167,7 +167,12 @@ void ABDGGPlayer::DoFire()
 	}
 }
 
-void ABDGGPlayer::DoFireMulticast_Implementation()
+void ABDGGPlayer::SpawnStunFireSound_Implementation()
+{
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), fireSound2, GetActorLocation(), GetActorRotation());
+}
+
+void ABDGGPlayer::SpawnFireSound_Implementation()
 {
 	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), fireSound, GetActorLocation(), GetActorRotation());
 }
@@ -183,7 +188,15 @@ void ABDGGPlayer::ServerSetName_Implementation(const FString& name)
 void ABDGGPlayer::DoFireServer_Implementation()
 {
 	DoFire();
-	DoFireMulticast();
+
+	if (itemnum == 0)
+	{
+		SpawnFireSound();
+	}
+	else
+	{
+		SpawnStunFireSound();
+	}
 }
 
 void ABDGGPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

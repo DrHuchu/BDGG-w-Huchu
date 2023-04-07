@@ -35,4 +35,10 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void Stunned();
 
+	UPROPERTY(EditAnywhere)
+	class USoundBase* chiriri;
+
+	UFUNCTION(Client, Unreliable)
+	void SpawnChiririSound();
+
 };
