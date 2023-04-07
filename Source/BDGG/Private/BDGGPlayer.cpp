@@ -151,6 +151,11 @@ void ABDGGPlayer::DoFire()
 	}
 }
 
+void ABDGGPlayer::SpawnStunFireSound_Implementation()
+{
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), fireSound2, GetActorLocation(), GetActorRotation());
+}
+
 void ABDGGPlayer::SpawnFireSound_Implementation()
 {
 	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), fireSound, GetActorLocation(), GetActorRotation());
@@ -159,6 +164,13 @@ void ABDGGPlayer::SpawnFireSound_Implementation()
 void ABDGGPlayer::DoFireServer_Implementation()
 {
 	DoFire();
-	SpawnFireSound();
+	if (itemnum == 0)
+	{
+		SpawnFireSound();
+	}
+	else
+	{
+		SpawnStunFireSound();
+	}
 }
 
