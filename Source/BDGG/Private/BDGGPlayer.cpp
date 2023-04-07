@@ -12,6 +12,9 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/WidgetComponent.h"
 #include "PlayerInfoWidget.h"
+#include "Net/UnrealNetwork.h"
+#include "BDGGGameInstance.h"
+#include "Components/TextBlock.h"
 
 // Sets default values
 ABDGGPlayer::ABDGGPlayer()
@@ -79,6 +82,13 @@ void ABDGGPlayer::BeginPlay()
 		crosshairUI->AddToViewport();
 	}
 	infoWidget = Cast<UPlayerInfoWidget>(playerInfoUI->GetWidget());
+	auto gameInstance = Cast<UBDGGGameInstance>(GetGameInstance());
+
+	if (GetController() != nullptr && GetController()->IsLocalController())
+	{
+		ServerSetName(gameInstance->sessionID.ToString());
+	}
+
 }
 
 // Called every frame
@@ -86,6 +96,7 @@ void ABDGGPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	infoWidget->text_name->SetText(FText::FromString(myName));
 
 }
 
@@ -163,9 +174,22 @@ void ABDGGPlayer::DoFireMulticast_Implementation()
 }
 
 
+void ABDGGPlayer::ServerSetName_Implementation(const FString& name)
+{
+	myName = name;
+}
+
+
+
 void ABDGGPlayer::DoFireServer_Implementation()
 {
 	DoFire();
 	DoFireMulticast();
 }
 
+void ABDGGPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ABDGGPlayer, myName);
+
+}

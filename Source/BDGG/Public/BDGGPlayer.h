@@ -75,5 +75,12 @@ public:
 	UPROPERTY()
 	UUserWidget* crosshairUI;
 
+	UFUNCTION(Server, Unreliable)
+	void ServerSetName(const FString& name);
+		
+	UPROPERTY(Replicated)
+	FString myName;
+	
+
 	
 };

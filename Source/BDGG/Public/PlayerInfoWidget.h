@@ -20,11 +20,11 @@ protected:
 
 public:
 	
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta=(BindWidget))
 	class UTextBlock* text_name;
 
 	void Setplayer(class ABDGGPlayer* player);
 
 private:
-	class ABDGGPlayer* player;
+	class ABDGGPlayer* me;
 };
