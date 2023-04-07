@@ -27,15 +27,24 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Bullet")
 	class UStaticMeshComponent* meshComp;
 
+	UPROPERTY(EditAnywhere)
+	class UParticleSystemComponent* lightningBullet;
+
 	UPROPERTY(VisibleAnywhere, Category = "Bullet")
 	class ABrickBase* brick;
 
 	UPROPERTY(VisibleAnywhere, Category = "Bullet")
 	class AUnbreakable* unbreakable;
 
+	UPROPERTY(VisibleAnywhere, Category = "Bullet")
+	class ABDGGPlayer* player;
+
+	UPROPERTY(VIsibleAnywhere, Category = "Bullet")
+	ABullet* bullet;
+
 	//함수 관련
 	UFUNCTION()
-	void BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bBFromSweep, const FHitResult& SweepResult);
+	virtual void BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bBFromSweep, const FHitResult& SweepResult);
 
 
 };

@@ -5,6 +5,7 @@
 #include "BrickBase.h"
 #include "Unbreakable.h"
 #include "Components/StaticMeshComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 ABullet::ABullet()
@@ -14,6 +15,11 @@ ABullet::ABullet()
 
 	meshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("meshComp"));
 	SetRootComponent(meshComp);
+
+	lightningBullet = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("lightningBullet"));
+	lightningBullet->SetupAttachment(meshComp);
+
+	lightningBullet->SetRelativeScale3D(FVector(15.0f));
 }
 
 // Called when the game starts or when spawned
@@ -31,7 +37,7 @@ void ABullet::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//임시 자동 전진--------------------------------------
-	SetActorLocation(GetActorLocation() + GetActorForwardVector() * 2000 * DeltaTime);
+	SetActorLocation(GetActorLocation() + GetActorForwardVector() * 5000 * DeltaTime);
 }
 
 // 총알 충돌 함수
@@ -41,14 +47,14 @@ void ABullet::BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 	//오버랩 된 액터가 벽돌이라면
 	brick = Cast<ABrickBase>(OtherActor);
 	unbreakable = Cast<AUnbreakable>(OtherActor);
+	bullet = Cast<ABullet>(OtherActor);
 
 	if(unbreakable)
 	{
 		unbreakable->OnBlockHit();
 		Destroy();
 	}
-
-	if(brick)
+	else if(brick)
 	{
 	//블럭을 파괴하고
 	brick->hitOrigin = GetActorLocation();
@@ -58,8 +64,13 @@ void ABullet::BulletCrash(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 	//자기 자신도 파괴한다.
 	Destroy();
 	}
-
-	Destroy();
-
+	else if(bullet)
+	{
+		return;
+	}
+	else
+	{
+		Destroy();
+	}
 }
 
