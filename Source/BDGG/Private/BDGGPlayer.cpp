@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "BDGGPlayer.h"
@@ -10,6 +10,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "BDGGPlayer_AnimInstance.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
+#include "PlayerInfoWidget.h"
+#include "Net/UnrealNetwork.h"
+#include "BDGGGameInstance.h"
+#include "Components/TextBlock.h"
 
 // Sets default values
 ABDGGPlayer::ABDGGPlayer()
@@ -18,39 +23,39 @@ ABDGGPlayer::ABDGGPlayer()
 	PrimaryActorTick.bCanEverTick = true;
 
 
-	// sudo code �ǻ��ڵ� => �˰�����
-	// 1. �ܰ��� �ش��ϴ� ������ �о�����ʹ�.
+	// sudo code 의사코드 => 알고리즘
+	// 1. 외관에 해당하는 에셋을 읽어오고싶다.
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn.SKM_Quinn'"));
-	// 2. �о������ �����ߴٸ�
+	// 2. 읽어왔을때 성공했다면
 	if (tempMesh.Succeeded())
 	{
-		// 3. Mesh�� �����ϰ��ʹ�. 
+		// 3. Mesh에 적용하고싶다. 
 		GetMesh()->SetSkeletalMesh(tempMesh.Object);
-		// 4. Transform �� �����ϰ��ʹ�.
+		// 4. Transform 을 수정하고싶다.
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, -90, 0));
 	}
 
-	// ��������, ī�޶� ������Ʈ�� �����ϰ��ʹ�.
+	// 스프링암, 카메라 컴포넌트를 생성하고싶다.
 	springArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("springArmComp"));
 	cameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("cameraComp"));
-	// ���������� ��Ʈ�� ���̰�
+	// 스프링암을 루트에 붙이고
 	springArmComp->SetupAttachment(RootComponent);
-	// ī�޶�� �������Ͽ� ���̰��ʹ�.
+	// 카메라는 스프링암에 붙이고싶다.
 	cameraComp->SetupAttachment(springArmComp);
 
 	springArmComp->SetRelativeLocation(FVector(0, 50, 100));
 	springArmComp->TargetArmLength = 250;
 
-	// �Է°��� ȸ���� �ݿ��ϰ��ʹ�.
+	// 입력값을 회전에 반영하고싶다.
 	bUseControllerRotationYaw = true;
 	springArmComp->bUsePawnControlRotation = true;
 	cameraComp->bUsePawnControlRotation = true;
 
 
-	// �Ϲ����� ������Ʈ�� ������ʹ�.
+	// 일반총의 컴포넌트를 만들고싶다.
 	gunMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("gunMeshComp"));
 	gunMeshComp->SetupAttachment(GetMesh(), TEXT("hand_rSocket"));
-	// �Ϲ����� ������ �о ������Ʈ�� �ְ��ʹ�.
+	// 일반총의 에셋을 읽어서 컴포넌트에 넣고싶다.
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempGunMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/FPWeapon/Mesh/SK_FPGun.SK_FPGun'"));
 	if (tempGunMesh.Succeeded())
 	{
@@ -58,10 +63,12 @@ ABDGGPlayer::ABDGGPlayer()
 		gunMeshComp->SetRelativeLocationAndRotation(FVector(-9, -2, -6), FRotator(0, 100, -20));
 	} 
 
-	// �̵�������Ʈ�� �ѽ��������Ʈ�� �����ϰ��ʹ�.
+	// 이동컴포넌트와 총쏘기컴포넌트를 생성하고싶다.
 	moveComp = CreateDefaultSubobject<UBDGGPlayerMoveComponent>(TEXT("moveComp"));
 
-	
+	//플레이어 info ui를 만들고싶다.
+	playerInfoUI = CreateDefaultSubobject<UWidgetComponent>(TEXT("Player Info UI"));
+	playerInfoUI->SetupAttachment(GetMesh());
 }
 
 // Called when the game starts or when spawned
@@ -69,10 +76,19 @@ void ABDGGPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	crosshairUI = CreateWidget(GetWorld(), crosshairFactory);
-	crosshairUI->AddToViewport();
+	if (GetWorld()->GetMapName().Contains("Huchu"))
+	{
+		crosshairUI = CreateWidget(GetWorld(), crosshairFactory);
+		crosshairUI->AddToViewport();
+	}
+	infoWidget = Cast<UPlayerInfoWidget>(playerInfoUI->GetWidget());
+	auto gameInstance = Cast<UBDGGGameInstance>(GetGameInstance());
 
-	
+	if (GetController() != nullptr && GetController()->IsLocalController())
+	{
+		ServerSetName(gameInstance->sessionID.ToString());
+	}
+
 }
 
 // Called every frame
@@ -80,6 +96,7 @@ void ABDGGPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	infoWidget->text_name->SetText(FText::FromString(myName));
 
 }
 
@@ -101,7 +118,7 @@ void ABDGGPlayer::OnActionFirePressed()
 {
 	DoFireServer();
 
-	//�ѽ�� �ִϸ��̼��� ����ϰ��ʹ�
+	//총쏘는 애니메이션을 사용하고싶다
 	auto anim = Cast<UBDGGPlayer_AnimInstance>(GetMesh()->GetAnimInstance());
 	anim->OnFire();
 }
@@ -114,18 +131,18 @@ void ABDGGPlayer::OnActionFireReleased()
 void ABDGGPlayer::DoFire()
 {
 	//SpawnActor
-	//�̷��� ã�� �� APlayer Getworld UKismetMathLibrary, UGameplayStatics
-	//�߿� ã�ƺ���
-	//�÷��̾� 1m ��
+	//이런거 찾을 때 APlayer Getworld UKismetMathLibrary, UGameplayStatics
+	//중에 찾아보기
+	//플레이어 1m 앞
 
 	
-	//���� �����۾��ٸ�
+	//만약 아이템없다면
 	if (itemnum == 0)
 	{
-	//����Ѿ��� ������ �ϰ��ʹ�
+	//노란총알이 나가게 하고싶다
 	
 		FTransform t = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
-	//��
+	//소
 		t.SetRotation(GetControlRotation().Quaternion());
 		ABullet* bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory, t);
 
@@ -134,10 +151,10 @@ void ABDGGPlayer::DoFire()
 			bullet->SetOwner(this);
 		}
 	}
-	//�������� �ִٸ� (itemnum != 0);
+	//아이템이 있다면 (itemnum != 0);
 	else
 	{
-		//�Ķ��Ѿ��� ������ �ϰ��ʹ�.
+		//파란총알이 나가게 하고싶다.
 		FTransform t = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
 		t.SetRotation(GetControlRotation().Quaternion());
 		ABullet* bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory2, t);
@@ -146,19 +163,33 @@ void ABDGGPlayer::DoFire()
 		{
 			bullet->SetOwner(this);
 		}
-		//�Ķ��Ѿ��� �������� -1�� ����.
+		//파란총알의 갯수에서 -1을 뺀다.
 		itemnum = itemnum - 1;
 	}
 }
 
-void ABDGGPlayer::SpawnFireSound_Implementation()
+void ABDGGPlayer::DoFireMulticast_Implementation()
 {
 	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), fireSound, GetActorLocation(), GetActorRotation());
 }
 
+
+void ABDGGPlayer::ServerSetName_Implementation(const FString& name)
+{
+	myName = name;
+}
+
+
+
 void ABDGGPlayer::DoFireServer_Implementation()
 {
 	DoFire();
-	SpawnFireSound();
+	DoFireMulticast();
 }
 
+void ABDGGPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ABDGGPlayer, myName);
+
+}
